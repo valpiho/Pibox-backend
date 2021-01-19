@@ -10,4 +10,5 @@ public class SnSwanBackendApplication {
         SpringApplication.run(SnSwanBackendApplication.class, args);
     }
 
+    // TODO: Implementation for CORS
 }

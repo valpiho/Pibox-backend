@@ -41,26 +41,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findUserByEmail(String email) {
-        return null;
+        return userRepository.findUserByEmail(email);
     }
 
     @Override
-    public User register(String firstName, String lastName, String username, String email) {
+    public User registerNewUser(String firstName, String lastName, String username, String email) {
+        // TODO: New user registration
         return null;
     }
 
     @Override
     public User addNewUser(String firstName, String lastName, String username, String email) {
+        // TODO: Add new user
         return null;
     }
 
     @Override
-    public User updateUser(Long id, String firstName, String lastName, String username, String email, String role, boolean isActive) {
+    public User updateUserById(Long id, String firstName, String lastName, String username, String email, String role, boolean isActive) {
+        // TODO: User update
         return null;
     }
 
     @Override
-    public void deleteUser(Long id) {
-
+    public void deleteUserById(Long id) {
+        userRepository.deleteUserById(id);
     }
 }

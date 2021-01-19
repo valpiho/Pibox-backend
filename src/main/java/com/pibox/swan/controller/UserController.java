@@ -15,8 +15,8 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{username}/profile")
+    @GetMapping("/{username}")
     public User getUser(@PathVariable("username") String username) {
-        return userService.findByUsername(username);
+        return userService.findUserByUsername(username);
     }
 }

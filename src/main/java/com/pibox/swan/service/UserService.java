@@ -8,12 +8,12 @@ public interface UserService {
 
     User findUserByEmail(String email);
 
-    User register(String firstName, String lastName, String username, String email);
+    User registerNewUser(String firstName, String lastName, String username, String email);
 
     User addNewUser(String firstName, String lastName, String username, String email);
 
-    User updateUser(Long id, String firstName, String lastName, String username, String email,
+    User updateUserById(Long id, String firstName, String lastName, String username, String email,
                     String role, boolean isActive);
 
-    void deleteUser(Long id);
+    void deleteUserById(Long id);
 }
