@@ -4,6 +4,7 @@ import com.pibox.swan.domain.User;
 import com.pibox.swan.domain.UserPrincipal;
 import com.pibox.swan.repository.UserRepository;
 import com.pibox.swan.service.UserService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +15,7 @@ import java.util.Date;
 
 @Service
 @Transactional
+@Qualifier("userDetailsService")
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
