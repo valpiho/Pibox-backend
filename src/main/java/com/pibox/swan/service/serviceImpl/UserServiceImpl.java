@@ -3,6 +3,7 @@ package com.pibox.swan.service.serviceImpl;
 import com.pibox.swan.domain.User;
 import com.pibox.swan.domain.UserPrincipal;
 import com.pibox.swan.enumeration.Role;
+import com.pibox.swan.exception.domain.UserNotFoundException;
 import com.pibox.swan.exception.domain.EmailExistException;
 import com.pibox.swan.exception.domain.UsernameExistException;
 import com.pibox.swan.repository.UserRepository;
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User registerNewUser(String firstName, String lastName, String username, String email)
-            throws UsernameExistException, EmailExistException {
+            throws UsernameExistException, EmailExistException, UserNotFoundException {
         validateNewUsernameAndEmail(EMPTY, username, email);
         User user = new User();
         String password = generatePassword();
@@ -99,13 +100,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     private User validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail)
-            throws UsernameExistException, EmailExistException {
+            throws UsernameExistException, EmailExistException, UserNotFoundException {
         User userByNewUsername = findUserByUsername(newUsername);
         User userByNewEmail = findUserByEmail(newEmail);
         if (StringUtils.isNotBlank(currentUsername)) {
             User currentUser = findUserByUsername(currentUsername);
             if (currentUsername == null) {
-                throw new UsernameNotFoundException("No user found by username");
+                throw new UserNotFoundException("No user found by username");
             }
             if (userByNewUsername != null && !currentUser.getId().equals(userByNewUsername.getId())) {
                 throw new UsernameExistException("Username already exists");
