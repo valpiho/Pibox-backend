@@ -9,6 +9,7 @@ import java.util.Date;
 @Entity
 public class User implements Serializable {
     // TODO: User Profile Image
+    // TODO: User isLocked ????
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
