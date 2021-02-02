@@ -3,10 +3,7 @@ package com.pibox.swan.service.serviceImpl;
 import com.pibox.swan.domain.User;
 import com.pibox.swan.domain.UserPrincipal;
 import com.pibox.swan.enumeration.Role;
-import com.pibox.swan.exception.domain.EmailNotFoundException;
-import com.pibox.swan.exception.domain.UserNotFoundException;
-import com.pibox.swan.exception.domain.EmailExistException;
-import com.pibox.swan.exception.domain.UsernameExistException;
+import com.pibox.swan.exception.domain.*;
 import com.pibox.swan.repository.UserRepository;
 import com.pibox.swan.service.EmailService;
 import com.pibox.swan.service.UserService;
@@ -20,13 +17,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Date;
 
+import static com.pibox.swan.constant.FileConstant.*;
 import static com.pibox.swan.constant.UserImplConstant.NO_USER_FOUND_BY_EMAIL;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.springframework.http.MediaType.*;
 
 @Service
 @Transactional
@@ -82,9 +89,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setActive(true);
         user.setRole(Role.ROLE_USER.name());
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
+        user.setProfileImgUrl(getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         emailService.sendNewPasswordEmail(firstName, password, email);
-        LOGGER.info("New user password: " + password);
+//        LOGGER.info("New user password: " + password);
         return user;
     }
 
@@ -151,5 +159,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private String encodePassword(String password) {
         return bCryptPasswordEncoder.encode(password);
+    }
+
+    private String getTemporaryProfileImageUrl(String username) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + username).toUriString();
+    }
+
+    private void saveProfileImage(User user, MultipartFile profileImage) throws IOException, NotAnImageFileException {
+        if (profileImage != null) {
+            if(!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
+                throw new NotAnImageFileException(profileImage.getOriginalFilename() + NOT_AN_IMAGE_FILE);
+            }
+            Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
+            if(!Files.exists(userFolder)) {
+                Files.createDirectories(userFolder);
+                LOGGER.info(DIRECTORY_CREATED + userFolder);
+            }
+            Files.deleteIfExists(Paths.get(userFolder + user.getUsername() + DOT + JPG_EXTENSION));
+            Files.copy(profileImage.getInputStream(), userFolder.resolve(user.getUsername() + DOT + JPG_EXTENSION), REPLACE_EXISTING);
+            user.setProfileImgUrl(setProfileImageUrl(user.getUsername()));
+            userRepository.save(user);
+            LOGGER.info(FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
+        }
+    }
+
+    private String setProfileImageUrl(String username) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH
+                + username + DOT + JPG_EXTENSION).toUriString();
     }
 }
