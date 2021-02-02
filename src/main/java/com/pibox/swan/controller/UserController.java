@@ -1,8 +1,10 @@
 package com.pibox.swan.controller;
 
+import com.pibox.swan.domain.HttpResponse;
 import com.pibox.swan.domain.User;
 import com.pibox.swan.domain.UserPrincipal;
 import com.pibox.swan.exception.domain.EmailExistException;
+import com.pibox.swan.exception.domain.EmailNotFoundException;
 import com.pibox.swan.exception.domain.UserNotFoundException;
 import com.pibox.swan.exception.domain.UsernameExistException;
 import com.pibox.swan.service.UserService;
@@ -13,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
 
 import static com.pibox.swan.constant.SecurityConstant.JWT_TOKEN_HEADER;
 
@@ -38,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) throws UsernameExistException, EmailExistException, UserNotFoundException {
+    public ResponseEntity<User> register(@RequestBody User user) throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
         User newUser = userService.registerNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
@@ -52,6 +56,12 @@ public class UserController {
         return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
     }
 
+    @GetMapping("/reset-password/{email}")
+    public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) throws MessagingException, EmailNotFoundException {
+        userService.resetPassword(email);
+        return response(HttpStatus.OK, "An email with a new password was sent to: " + email);
+    }
+
     private void authenticate(String username, String password) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
@@ -60,5 +70,10 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.add(JWT_TOKEN_HEADER, jwtTokenProvider.generateJwtToken(userPrincipal));
         return headers;
+    }
+
+    private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(),
+                httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message), httpStatus);
     }
 }

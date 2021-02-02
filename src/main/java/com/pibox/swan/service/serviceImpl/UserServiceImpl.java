@@ -3,10 +3,12 @@ package com.pibox.swan.service.serviceImpl;
 import com.pibox.swan.domain.User;
 import com.pibox.swan.domain.UserPrincipal;
 import com.pibox.swan.enumeration.Role;
+import com.pibox.swan.exception.domain.EmailNotFoundException;
 import com.pibox.swan.exception.domain.UserNotFoundException;
 import com.pibox.swan.exception.domain.EmailExistException;
 import com.pibox.swan.exception.domain.UsernameExistException;
 import com.pibox.swan.repository.UserRepository;
+import com.pibox.swan.service.EmailService;
 import com.pibox.swan.service.UserService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,9 +21,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.Date;
 
+import static com.pibox.swan.constant.UserImplConstant.NO_USER_FOUND_BY_EMAIL;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Service
@@ -32,11 +36,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final EmailService emailService;
 
     public UserServiceImpl(UserRepository userRepository,
-                           BCryptPasswordEncoder bCryptPasswordEncoder) {
+                           BCryptPasswordEncoder bCryptPasswordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.emailService = emailService;
     }
 
     @Override
@@ -63,7 +69,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User registerNewUser(String firstName, String lastName, String username, String email)
-            throws UsernameExistException, EmailExistException, UserNotFoundException {
+            throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
         validateNewUsernameAndEmail(EMPTY, username, email);
         User user = new User();
         String password = generatePassword();
@@ -77,7 +83,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setRole(Role.ROLE_USER.name());
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
         userRepository.save(user);
-        // TODO: Send email with password to the new user.
+        emailService.sendNewPasswordEmail(firstName, password, email);
         LOGGER.info("New user password: " + password);
         return user;
     }
@@ -98,6 +104,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void deleteUserById(Long id) {
         userRepository.deleteUserById(id);
     }
+
+    @Override
+    public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new EmailNotFoundException(NO_USER_FOUND_BY_EMAIL + email);
+        }
+        String password = generatePassword();
+        user.setPassword(encodePassword(password));
+        userRepository.save(user);
+        emailService.sendNewPasswordEmail(user.getFirstName(), password, user.getEmail());
+    }
+
 
     private User validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail)
             throws UsernameExistException, EmailExistException, UserNotFoundException {

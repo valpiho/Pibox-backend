@@ -86,10 +86,10 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<HttpResponse> noHandlerFoundException(NoHandlerFoundException exception) {
-        return createHttpResponse(HttpStatus.BAD_REQUEST, "This page was not found");
-    }
+//    @ExceptionHandler(NoHandlerFoundException.class)
+//    public ResponseEntity<HttpResponse> noHandlerFoundException(NoHandlerFoundException exception) {
+//        return createHttpResponse(HttpStatus.BAD_REQUEST, "This page was not found");
+//    }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<HttpResponse> methodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
