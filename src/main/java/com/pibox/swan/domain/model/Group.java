@@ -1,4 +1,4 @@
-package com.pibox.swan.domain;
+package com.pibox.swan.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,6 +28,11 @@ public class Group implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Department> departments;
+
+    // private Set<User> users; // TODO: all users in Group
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "group_post",
             joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
@@ -36,7 +41,8 @@ public class Group implements Serializable {
 
     public Group() {}
 
-    public Group(Long id, String title, String abbreviation, String description, String groupImgUrl, Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, User user, Set<Post> posts) {
+    public Group(Long id, String title, String abbreviation, String description, String groupImgUrl,
+                 Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, User user, Set<Post> posts) {
         this.id = id;
         this.title = title;
         this.abbreviation = abbreviation;

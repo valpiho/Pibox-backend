@@ -1,6 +1,6 @@
 package com.pibox.swan.service.serviceImpl;
 
-import com.pibox.swan.domain.User;
+import com.pibox.swan.domain.model.User;
 import com.pibox.swan.domain.UserPrincipal;
 import com.pibox.swan.enumeration.Role;
 import com.pibox.swan.exception.domain.*;

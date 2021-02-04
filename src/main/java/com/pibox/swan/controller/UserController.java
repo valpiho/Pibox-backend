@@ -1,7 +1,7 @@
 package com.pibox.swan.controller;
 
 import com.pibox.swan.domain.HttpResponse;
-import com.pibox.swan.domain.User;
+import com.pibox.swan.domain.model.User;
 import com.pibox.swan.domain.UserPrincipal;
 import com.pibox.swan.exception.domain.EmailExistException;
 import com.pibox.swan.exception.domain.EmailNotFoundException;

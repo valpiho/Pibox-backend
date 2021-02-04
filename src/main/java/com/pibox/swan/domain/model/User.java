@@ -1,4 +1,4 @@
-package com.pibox.swan.domain;
+package com.pibox.swan.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

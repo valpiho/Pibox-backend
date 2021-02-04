@@ -1,6 +1,6 @@
 package com.pibox.swan.repository;
 
-import com.pibox.swan.domain.User;
+import com.pibox.swan.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
