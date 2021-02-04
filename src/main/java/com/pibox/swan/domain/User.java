@@ -5,8 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
-@Entity
+@Entity(name = "users")
 public class User implements Serializable {
     // TODO: User isLocked ????
 
@@ -27,6 +28,12 @@ public class User implements Serializable {
     private String role;
     private String[] authorities;
     private boolean isActive;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Post> posts;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Group> groups;
 
     public User() {
     }
@@ -141,6 +148,14 @@ public class User implements Serializable {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public Set<Post> getPost() {
+        return posts;
+    }
+
+    public void setPost(Set<Post> post) {
+        this.posts = post;
     }
 }
 
