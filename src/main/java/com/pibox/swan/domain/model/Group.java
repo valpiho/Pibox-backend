@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-@Entity(name = "user_groups")
+@Entity(name = "hobby_groups")
 public class Group implements Serializable {
 
     @Id
@@ -26,15 +26,16 @@ public class Group implements Serializable {
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    private User user;
+    private User groupOwner;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Department> departments;
 
-    // private Set<User> users; // TODO: all users in Group
+    @ManyToMany(mappedBy = "groups")
+    private Set<User> users;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "group_post",
+    @JoinTable(name = "hobby_group_posts",
             joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
     private Set<Post> posts;
@@ -42,7 +43,7 @@ public class Group implements Serializable {
     public Group() {}
 
     public Group(Long id, String title, String abbreviation, String description, String groupImgUrl,
-                 Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, User user, Set<Post> posts) {
+                 Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, User groupOwner) {
         this.id = id;
         this.title = title;
         this.abbreviation = abbreviation;
@@ -52,8 +53,7 @@ public class Group implements Serializable {
         this.updatedAt = updatedAt;
         this.isPublic = isPublic;
         this.isActive = isActive;
-        this.user = user;
-        this.posts = posts;
+        this.groupOwner = groupOwner;
     }
 
     public Long getId() {
@@ -128,12 +128,28 @@ public class Group implements Serializable {
         isActive = active;
     }
 
-    public User getUser() {
-        return user;
+    public User getGroupOwner() {
+        return groupOwner;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setGroupOwner(User user) {
+        this.groupOwner = user;
+    }
+
+    public Set<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(Set<Department> departments) {
+        this.departments = departments;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     public Set<Post> getPosts() {

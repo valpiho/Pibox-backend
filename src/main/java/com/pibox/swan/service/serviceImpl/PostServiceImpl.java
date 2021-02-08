@@ -1,6 +1,7 @@
 package com.pibox.swan.service.serviceImpl;
 
 import com.pibox.swan.domain.model.*;
+import com.pibox.swan.repository.PostRepository;
 import com.pibox.swan.service.GroupService;
 import com.pibox.swan.service.PostService;
 import com.pibox.swan.service.UserService;
@@ -11,12 +12,12 @@ import java.util.List;
 @Service
 public class PostServiceImpl implements PostService {
 
-    private final PostService postService;
+    private final PostRepository postRepository;
     private final UserService userService;
     private final GroupService groupService;
 
-    public PostServiceImpl(PostService postService, UserService userService, GroupService groupService) {
-        this.postService = postService;
+    public PostServiceImpl(PostRepository postRepository, UserService userService, GroupService groupService) {
+        this.postRepository = postRepository;
         this.userService = userService;
         this.groupService = groupService;
     }

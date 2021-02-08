@@ -32,8 +32,26 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Post> posts;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "groupOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Group> ownGroups;
+
+    @ManyToMany
+    @JoinTable(name = "users_groups",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"))
     private Set<Group> groups;
+
+    @ManyToMany
+    @JoinTable(name = "users_departments",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "department_id", referencedColumnName = "id"))
+    private Set<Department> departments;
+
+    @ManyToMany
+    @JoinTable(name = "users_courses",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"))
+    private Set<Course> courses;
 
     public User() {
     }
@@ -150,12 +168,44 @@ public class User implements Serializable {
         isActive = active;
     }
 
-    public Set<Post> getPost() {
+    public Set<Post> getPosts() {
         return posts;
     }
 
-    public void setPost(Set<Post> post) {
+    public void setPosts(Set<Post> post) {
         this.posts = post;
+    }
+
+    public Set<Group> getOwnGroups() {
+        return ownGroups;
+    }
+
+    public void setOwnGroups(Set<Group> ownGroups) {
+        this.ownGroups = ownGroups;
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
+    }
+
+    public Set<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(Set<Department> departments) {
+        this.departments = departments;
+    }
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
     }
 }
 
