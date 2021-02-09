@@ -34,9 +34,13 @@ public class Department {
     @ManyToMany(mappedBy = "departments")
     private Set<User> users;
 
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Post> posts;
+
     public Department() {}
 
-    public Department(Long id, String title, String description, String shortCode, String country, String city, Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, Group group) {
+    public Department(Long id, String title, String description, String shortCode, String country, String city,
+                      Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, Group group) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -152,5 +156,13 @@ public class Department {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
 }

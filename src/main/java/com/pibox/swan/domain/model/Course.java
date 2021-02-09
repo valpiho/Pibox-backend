@@ -29,9 +29,13 @@ public class Course {
     @ManyToMany(mappedBy = "courses")
     private Set<User> users;
 
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Post> posts;
+
     public Course() {}
 
-    public Course(Long id, String title, String description, String shortCode, Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, Department department) {
+    public Course(Long id, String title, String description, String shortCode,
+                  Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, Department department) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -121,5 +125,13 @@ public class Course {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
 }

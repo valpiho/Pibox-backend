@@ -34,10 +34,7 @@ public class Group implements Serializable {
     @ManyToMany(mappedBy = "groups")
     private Set<User> users;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "hobby_group_posts",
-            joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Post> posts;
 
     public Group() {}

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 @Entity(name = "user_posts")
 public class Post implements Serializable {
@@ -26,12 +25,23 @@ public class Post implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany(mappedBy = "posts")
-    private Set<Group> groups;
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
 
     public Post() {}
 
-    public Post(Long id, String title, String description, Date createdAt, Date updatedAt, boolean isActive, boolean isDraft, User user, Set<Group> groups) {
+    public Post(Long id, String title, String description,
+                Date createdAt, Date updatedAt, boolean isActive, boolean isDraft,
+                User user, Group group, Department department, Course course) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -40,7 +50,9 @@ public class Post implements Serializable {
         this.isActive = isActive;
         this.isDraft = isDraft;
         this.user = user;
-        this.groups = groups;
+        this.group = group;
+        this.department = department;
+        this.course = course;
     }
 
     public Long getId() {
@@ -107,11 +119,27 @@ public class Post implements Serializable {
         this.user = user;
     }
 
-    public Set<Group> getGroups() {
-        return groups;
+    public Group getGroup() {
+        return group;
     }
 
-    public void setGroups(Set<Group> groups) {
-        this.groups = groups;
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 }
