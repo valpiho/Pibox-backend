@@ -35,7 +35,19 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void addNewGroup(User user, String title, String abbreviation, String description, boolean isPublic) {
+    public Group createNewGroup(User user, String title, String abbreviation, String description, boolean isPublic) {
+        Group group = new Group();
+        group.setGroupOwner(user);
+        group.setTitle(title);
+        group.setAbbreviation(abbreviation);
+        group.setDescription(description);
+        group.setPublic(isPublic);
+        groupRepository.save(group);
+        return group;
+    }
+
+    @Override
+    public void addNewGroup(User user, String title, String abbreviation, String description, boolean isPublic, boolean isActive) {
         // TODO:
     }
 
