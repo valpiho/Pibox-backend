@@ -1,5 +1,6 @@
 package com.pibox.swan.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -33,6 +34,7 @@ public class User implements Serializable {
     private Set<Post> posts;
 
     @OneToMany(mappedBy = "groupOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Group> ownGroups;
 
     @ManyToMany

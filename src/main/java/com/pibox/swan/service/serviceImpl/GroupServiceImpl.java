@@ -8,6 +8,8 @@ import com.pibox.swan.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,11 +39,13 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group createNewGroup(User user, String title, String abbreviation, String description, boolean isPublic) {
         Group group = new Group();
-        group.setGroupOwner(user);
+        group.setCreatedAt(new Date());
+        group.setGroupOwner(userService.findUserByUsername(user.getUsername()));
         group.setTitle(title);
         group.setAbbreviation(abbreviation);
         group.setDescription(description);
-        group.setPublic(isPublic);
+        group.setIsPublic(isPublic);
+        group.setIsActive(true);
         groupRepository.save(group);
         return group;
     }

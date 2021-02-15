@@ -1,5 +1,6 @@
 package com.pibox.swan.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -24,8 +25,9 @@ public class Group implements Serializable {
     private boolean isPublic;
     private boolean isActive;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User groupOwner;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -109,19 +111,19 @@ public class Group implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isPublic() {
+    public boolean getIsPublic() {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
+    public void setIsPublic(boolean aPublic) {
         isPublic = aPublic;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setIsActive(boolean active) {
         isActive = active;
     }
 
