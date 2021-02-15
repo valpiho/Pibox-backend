@@ -3,12 +3,12 @@ package com.pibox.swan.service.serviceImpl;
 import com.pibox.swan.domain.model.Group;
 import com.pibox.swan.domain.model.User;
 import com.pibox.swan.repository.GroupRepository;
+import com.pibox.swan.repository.UserRepository;
 import com.pibox.swan.service.GroupService;
 import com.pibox.swan.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,14 +39,18 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group createNewGroup(User user, String title, String abbreviation, String description, boolean isPublic) {
         Group group = new Group();
+        User existsUser = userService.findUserByUsername(user.getUsername());
+
         group.setCreatedAt(new Date());
-        group.setGroupOwner(userService.findUserByUsername(user.getUsername()));
+        group.setGroupOwner(existsUser);
         group.setTitle(title);
         group.setAbbreviation(abbreviation);
         group.setDescription(description);
         group.setIsPublic(isPublic);
         group.setIsActive(true);
+        existsUser.getGroups().add(group);
         groupRepository.save(group);
+
         return group;
     }
 

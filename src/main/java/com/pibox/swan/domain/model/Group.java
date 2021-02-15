@@ -1,11 +1,13 @@
 package com.pibox.swan.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "hobby_groups")
@@ -33,8 +35,8 @@ public class Group implements Serializable {
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Department> departments;
 
-    @ManyToMany(mappedBy = "groups")
-    private Set<User> users;
+    @ManyToMany(mappedBy = "groups", fetch = FetchType.LAZY)
+    private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Post> posts;
