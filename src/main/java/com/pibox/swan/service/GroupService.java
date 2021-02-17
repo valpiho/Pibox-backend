@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface GroupService {
 
-    Group findGroupById(Long id);
+    Group findGroupByGroupId(String groupId);
 
     List<Group> findAllGroupsByUser(User user);
 

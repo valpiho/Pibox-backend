@@ -1,8 +1,9 @@
 package com.pibox.swan.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "users")
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class User implements Serializable {
     // TODO: User isLocked ????
 
@@ -35,8 +37,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Post> posts;
 
-    @OneToMany(mappedBy = "groupOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "groupOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Group> ownGroups;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -60,8 +61,9 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String username, String password, String email,
-                String profileImgUrl, Date joinDate, Date lastLoginDate, String role, String[] authorities, boolean isActive) {
+    public User(Long id, String firstName, String lastName, String username, String password, String email, String profileImgUrl,
+                Date joinDate, Date lastLoginDate, String role, String[] authorities, boolean isActive,
+                Set<Post> posts, Set<Group> ownGroups, Set<Group> groups, Set<Department> departments, Set<Course> courses) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -74,6 +76,11 @@ public class User implements Serializable {
         this.role = role;
         this.authorities = authorities;
         this.isActive = isActive;
+        this.posts = posts;
+        this.ownGroups = ownGroups;
+        this.groups = groups;
+        this.departments = departments;
+        this.courses = courses;
     }
 
     public Long getId() {

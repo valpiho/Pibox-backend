@@ -1,8 +1,6 @@
 package com.pibox.swan.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "hobby_groups")
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class Group implements Serializable {
 
     @Id
@@ -18,6 +17,7 @@ public class Group implements Serializable {
     @Column(nullable = false, updatable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
+    private String groupId;
     private String title;
     private String abbreviation;
     private String description;
@@ -27,15 +27,14 @@ public class Group implements Serializable {
     private boolean isPublic;
     private boolean isActive;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private User groupOwner;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Department> departments;
 
-    @ManyToMany(mappedBy = "groups", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "groups")
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -43,9 +42,11 @@ public class Group implements Serializable {
 
     public Group() {}
 
-    public Group(Long id, String title, String abbreviation, String description, String groupImgUrl,
-                 Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, User groupOwner) {
+    public Group(Long id, String groupId, String title, String abbreviation, String description, String groupImgUrl,
+                 Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, User groupOwner,
+                 Set<Department> departments, Set<User> users, Set<Post> posts) {
         this.id = id;
+        this.groupId = groupId;
         this.title = title;
         this.abbreviation = abbreviation;
         this.description = description;
@@ -55,6 +56,9 @@ public class Group implements Serializable {
         this.isPublic = isPublic;
         this.isActive = isActive;
         this.groupOwner = groupOwner;
+        this.departments = departments;
+        this.users = users;
+        this.posts = posts;
     }
 
     public Long getId() {
@@ -63,6 +67,14 @@ public class Group implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public String getTitle() {
@@ -135,6 +147,9 @@ public class Group implements Serializable {
 
     public void setGroupOwner(User user) {
         this.groupOwner = user;
+        this.getUsers().add(user);
+        user.getOwnGroups().add(this);
+        user.getGroups().add(this);
     }
 
     public Set<Department> getDepartments() {

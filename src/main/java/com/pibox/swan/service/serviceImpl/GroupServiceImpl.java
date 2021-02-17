@@ -6,6 +6,7 @@ import com.pibox.swan.repository.GroupRepository;
 import com.pibox.swan.repository.UserRepository;
 import com.pibox.swan.service.GroupService;
 import com.pibox.swan.service.UserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,16 +19,17 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public GroupServiceImpl(GroupRepository groupRepository, UserService userService) {
+    public GroupServiceImpl(GroupRepository groupRepository, UserService userService, UserRepository userRepository) {
         this.groupRepository = groupRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Group findGroupById(Long id) {
-        // TODO:
-        return null;
+    public Group findGroupByGroupId(String groupId) {
+        return groupRepository.findGroupByGroupId(groupId);
     }
 
     @Override
@@ -41,17 +43,20 @@ public class GroupServiceImpl implements GroupService {
         Group group = new Group();
         User existsUser = userService.findUserByUsername(user.getUsername());
 
-        group.setCreatedAt(new Date());
         group.setGroupOwner(existsUser);
+        group.setGroupId(generateUserId());
+        group.setCreatedAt(new Date());
         group.setTitle(title);
         group.setAbbreviation(abbreviation);
         group.setDescription(description);
         group.setIsPublic(isPublic);
         group.setIsActive(true);
-        existsUser.getGroups().add(group);
         groupRepository.save(group);
-
         return group;
+    }
+
+    private String generateUserId() {
+        return RandomStringUtils.randomNumeric(10);
     }
 
     @Override

@@ -30,5 +30,10 @@ public class GroupController {
         return new ResponseEntity<>(newGroup, HttpStatus.OK);
     }
 
+    @GetMapping("/{groupId}")
+    public Group getGroup(@PathVariable("groupId") String groupId){
+        return groupService.findGroupByGroupId(groupId);
+    }
+
 
 }
