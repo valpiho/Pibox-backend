@@ -1,7 +1,6 @@
 package com.pibox.swan.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -12,14 +11,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "users")
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User implements Serializable {
     // TODO: User isLocked ????
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     private String firstName;
     private String lastName;

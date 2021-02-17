@@ -20,6 +20,11 @@ public class GroupController {
     }
 
     @GetMapping("/")
+    public List<Group> getAllActivePublicGroups() {
+        return groupService.findAllActivePublicGroups();
+    }
+
+    @GetMapping("/my_groups")
     public List<Group> getGroupsByUser(@RequestBody User user) {
         return groupService.findAllGroupsByUser(user);
     }

@@ -33,6 +33,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public List<Group> findAllActivePublicGroups() {
+        return groupRepository.findAllByIsActiveIsTrueAndIsPublicIsTrue();
+    }
+
+    @Override
     public List<Group> findAllGroupsByUser(User user) {
         // TODO:
         return null;

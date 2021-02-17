@@ -9,6 +9,8 @@ public interface GroupService {
 
     Group findGroupByGroupId(String groupId);
 
+    List<Group> findAllActivePublicGroups();
+
     List<Group> findAllGroupsByUser(User user);
 
     Group createNewGroup(User user, String title, String abbreviation, String description, boolean isPublic);

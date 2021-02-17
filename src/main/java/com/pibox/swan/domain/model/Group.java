@@ -1,21 +1,18 @@
 package com.pibox.swan.domain.model;
 
-import com.fasterxml.jackson.annotation.*;
-
 import javax.persistence.*;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "hobby_groups")
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class Group implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     private String groupId;
     private String title;
