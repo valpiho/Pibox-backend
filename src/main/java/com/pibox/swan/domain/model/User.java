@@ -42,7 +42,7 @@ public class User implements Serializable {
     @JoinTable(name = "users_groups",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"))
-    private Set<Group> groups = new HashSet<>();
+    private Set<Group> groups;
 
     @ManyToMany
     @JoinTable(name = "users_departments",
@@ -60,8 +60,7 @@ public class User implements Serializable {
     }
 
     public User(Long id, String firstName, String lastName, String username, String password, String email, String profileImgUrl,
-                Date joinDate, Date lastLoginDate, String role, String[] authorities, boolean isActive,
-                Set<Post> posts, Set<Group> ownGroups, Set<Group> groups, Set<Department> departments, Set<Course> courses) {
+                Date joinDate, Date lastLoginDate, String role, String[] authorities, boolean isActive) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -74,11 +73,11 @@ public class User implements Serializable {
         this.role = role;
         this.authorities = authorities;
         this.isActive = isActive;
-        this.posts = posts;
-        this.ownGroups = ownGroups;
-        this.groups = groups;
-        this.departments = departments;
-        this.courses = courses;
+        this.posts = new HashSet<>();
+        this.ownGroups = new HashSet<>();
+        this.groups = new HashSet<>();
+        this.departments = new HashSet<>();
+        this.courses = new HashSet<>();
     }
 
     public Long getId() {
@@ -178,6 +177,9 @@ public class User implements Serializable {
     }
 
     public Set<Post> getPosts() {
+        if (posts == null) {
+            posts = new HashSet<>();
+        }
         return posts;
     }
 
@@ -186,6 +188,9 @@ public class User implements Serializable {
     }
 
     public Set<Group> getOwnGroups() {
+        if (ownGroups == null) {
+            ownGroups = new HashSet<>();
+        }
         return ownGroups;
     }
 
@@ -194,6 +199,9 @@ public class User implements Serializable {
     }
 
     public Set<Group> getGroups() {
+        if (groups == null) {
+            groups = new HashSet<>();
+        }
         return groups;
     }
 
@@ -202,6 +210,9 @@ public class User implements Serializable {
     }
 
     public Set<Department> getDepartments() {
+        if (departments == null) {
+            departments = new HashSet<>();
+        }
         return departments;
     }
 
@@ -210,6 +221,9 @@ public class User implements Serializable {
     }
 
     public Set<Course> getCourses() {
+        if (courses == null) {
+            courses = new HashSet<>();
+        }
         return courses;
     }
 
