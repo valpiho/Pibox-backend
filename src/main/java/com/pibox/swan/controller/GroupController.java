@@ -3,20 +3,26 @@ package com.pibox.swan.controller;
 import com.pibox.swan.domain.model.Group;
 import com.pibox.swan.domain.model.User;
 import com.pibox.swan.service.GroupService;
+import com.pibox.swan.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/group")
+@RequestMapping("/groups")
 public class GroupController {
 
     private final GroupService groupService;
+    private final UserService userService;
 
-    public GroupController(GroupService groupService) {
+    public GroupController(GroupService groupService,
+                           UserService userService) {
         this.groupService = groupService;
+        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -24,8 +30,8 @@ public class GroupController {
         return groupService.findAllActivePublicGroups();
     }
 
-    @GetMapping("/my_groups")
-    public List<Group> getGroupsByUser(@RequestBody User user) {
+    @PostMapping("/user-groups")
+    public List<Group> getGroupsByUsername(@RequestBody User user) {
         return groupService.findAllGroupsByUser(user);
     }
 

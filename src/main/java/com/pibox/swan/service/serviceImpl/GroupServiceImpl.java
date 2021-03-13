@@ -19,12 +19,10 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    public GroupServiceImpl(GroupRepository groupRepository, UserService userService, UserRepository userRepository) {
+    public GroupServiceImpl(GroupRepository groupRepository, UserService userService) {
         this.groupRepository = groupRepository;
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -37,11 +35,9 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.findAllByIsActiveIsTrueAndIsPublicIsTrue();
     }
 
-    @Override
     public List<Group> findAllGroupsByUser(User user) {
-        // TODO:
-        return null;
-    }
+        return groupRepository.findAllByUsersIsContaining(user);
+    };
 
     @Override
     public Group createNewGroup(User user, String title, String abbreviation, String description, boolean isPublic) {
@@ -56,17 +52,13 @@ public class GroupServiceImpl implements GroupService {
         group.setDescription(description);
         group.setIsPublic(isPublic);
         group.setIsActive(true);
+
         groupRepository.save(group);
         return group;
     }
 
     private String generateUserId() {
         return RandomStringUtils.randomNumeric(10);
-    }
-
-    @Override
-    public void addNewGroup(User user, String title, String abbreviation, String description, boolean isPublic, boolean isActive) {
-        // TODO:
     }
 
     @Override

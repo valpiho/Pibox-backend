@@ -15,8 +15,6 @@ public interface GroupService {
 
     Group createNewGroup(User user, String title, String abbreviation, String description, boolean isPublic);
 
-    void addNewGroup(User user, String title, String abbreviation, String description, boolean isPublic, boolean isActive);
-
     void updateGroup(User user, String title, String abbreviation, String description, boolean isPublic, boolean isActive);
 
     void deleteGroupById(Long id);
