@@ -1,8 +1,6 @@
 package com.pibox.swan.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "users")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class User implements Serializable {
     // TODO: User isLocked ????
 
@@ -33,28 +31,28 @@ public class User implements Serializable {
     private boolean isActive;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Post> posts;
+    private Set<Post> posts = new HashSet<>();
 
     @OneToMany(mappedBy = "groupOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Group> ownGroups;
+    private Set<Group> ownGroups = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "users_groups",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"))
-    private Set<Group> groups;
+    private Set<Group> groups = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "users_departments",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "department_id", referencedColumnName = "id"))
-    private Set<Department> departments;
+    private Set<Department> departments = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "users_courses",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"))
-    private Set<Course> courses;
+    private Set<Course> courses = new HashSet<>();
 
     public User() {
     }
@@ -177,9 +175,6 @@ public class User implements Serializable {
     }
 
     public Set<Post> getPosts() {
-        if (posts == null) {
-            posts = new HashSet<>();
-        }
         return posts;
     }
 
@@ -188,9 +183,6 @@ public class User implements Serializable {
     }
 
     public Set<Group> getOwnGroups() {
-        if (ownGroups == null) {
-            ownGroups = new HashSet<>();
-        }
         return ownGroups;
     }
 
@@ -199,9 +191,6 @@ public class User implements Serializable {
     }
 
     public Set<Group> getGroups() {
-        if (groups == null) {
-            groups = new HashSet<>();
-        }
         return groups;
     }
 
@@ -210,9 +199,6 @@ public class User implements Serializable {
     }
 
     public Set<Department> getDepartments() {
-        if (departments == null) {
-            departments = new HashSet<>();
-        }
         return departments;
     }
 
@@ -221,9 +207,6 @@ public class User implements Serializable {
     }
 
     public Set<Course> getCourses() {
-        if (courses == null) {
-            courses = new HashSet<>();
-        }
         return courses;
     }
 

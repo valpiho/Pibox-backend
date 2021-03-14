@@ -1,18 +1,21 @@
 package com.pibox.swan.domain.model;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.*;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "hobby_groups")
+
 public class Group implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     private String groupId;
     private String title;
@@ -24,24 +27,31 @@ public class Group implements Serializable {
     private boolean isPublic;
     private boolean isActive;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId=true)
     private User groupOwner;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Department> departments;
+    private Set<Department> departments = new HashSet<>();
 
-    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Course> courses = new HashSet<>();
+
+    @ManyToMany(mappedBy = "groups")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Post> posts;
+    private Set<Post> posts = new HashSet<>();
 
     public Group() {}
 
     public Group(Long id, String groupId, String title, String abbreviation, String description, String groupImgUrl,
                  Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, User groupOwner,
-                 Set<Department> departments, Set<User> users, Set<Post> posts) {
+                 Set<Department> departments, Set<Course> courses, Set<User> users, Set<Post> posts) {
         this.id = id;
         this.groupId = groupId;
         this.title = title;
@@ -54,6 +64,7 @@ public class Group implements Serializable {
         this.isActive = isActive;
         this.groupOwner = groupOwner;
         this.departments = departments;
+        this.courses = courses;
         this.users = users;
         this.posts = posts;
     }
@@ -155,6 +166,14 @@ public class Group implements Serializable {
 
     public void setDepartments(Set<Department> departments) {
         this.departments = departments;
+    }
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
     }
 
     public Set<User> getUsers() {

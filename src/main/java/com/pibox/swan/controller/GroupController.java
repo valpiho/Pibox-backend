@@ -3,11 +3,8 @@ package com.pibox.swan.controller;
 import com.pibox.swan.domain.model.Group;
 import com.pibox.swan.domain.model.User;
 import com.pibox.swan.service.GroupService;
-import com.pibox.swan.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +14,9 @@ import java.util.List;
 public class GroupController {
 
     private final GroupService groupService;
-    private final UserService userService;
 
-    public GroupController(GroupService groupService,
-                           UserService userService) {
+    public GroupController(GroupService groupService) {
         this.groupService = groupService;
-        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -45,6 +39,4 @@ public class GroupController {
     public Group getGroup(@PathVariable("groupId") String groupId){
         return groupService.findGroupByGroupId(groupId);
     }
-
-
 }

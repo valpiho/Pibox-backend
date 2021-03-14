@@ -1,18 +1,17 @@
 package com.pibox.swan.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "courses")
-public class Course {
+public class Course implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     private String title;
     private String description;
@@ -23,19 +22,23 @@ public class Course {
     private boolean isActive;
 
     @ManyToOne()
+    @JoinColumn(name = "group_id")
+    private Group group;
+
+    @ManyToOne()
     @JoinColumn(name = "department_id")
     private Department department;
 
     @ManyToMany(mappedBy = "courses")
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Post> posts;
+    private Set<Post> posts = new HashSet<>();
 
     public Course() {}
 
     public Course(Long id, String title, String description, String shortCode,
-                  Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, Department department) {
+                  Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, Group group, Department department) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -44,6 +47,7 @@ public class Course {
         this.updatedAt = updatedAt;
         this.isPublic = isPublic;
         this.isActive = isActive;
+        this.group = group;
         this.department = department;
     }
 
@@ -109,6 +113,14 @@ public class Course {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public Department getDepartment() {

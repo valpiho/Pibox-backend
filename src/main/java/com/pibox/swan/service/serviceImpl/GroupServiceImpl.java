@@ -3,7 +3,6 @@ package com.pibox.swan.service.serviceImpl;
 import com.pibox.swan.domain.model.Group;
 import com.pibox.swan.domain.model.User;
 import com.pibox.swan.repository.GroupRepository;
-import com.pibox.swan.repository.UserRepository;
 import com.pibox.swan.service.GroupService;
 import com.pibox.swan.service.UserService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -45,7 +44,7 @@ public class GroupServiceImpl implements GroupService {
         User existsUser = userService.findUserByUsername(user.getUsername());
 
         group.setGroupOwner(existsUser);
-        group.setGroupId(generateUserId());
+        group.setGroupId(generateGroupId());
         group.setCreatedAt(new Date());
         group.setTitle(title);
         group.setAbbreviation(abbreviation);
@@ -57,7 +56,7 @@ public class GroupServiceImpl implements GroupService {
         return group;
     }
 
-    private String generateUserId() {
+    private String generateGroupId() {
         return RandomStringUtils.randomNumeric(10);
     }
 

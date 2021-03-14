@@ -1,22 +1,27 @@
 package com.pibox.swan.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "departments")
-public class Department {
+public class Department implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
+    private String departmentId;
     private String title;
     private String description;
-    private String shortCode;
     private String country; // TODO: Enum ???? Default inherits from Group
     private String city; // TODO: Enum ???? Default inherits from Group
     private Date createdAt;
@@ -26,25 +31,27 @@ public class Department {
 
     @ManyToOne()
     @JoinColumn(name = "group_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "groupId")
+    @JsonIdentityReference(alwaysAsId=true)
     private Group group;
 
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Course> courses;
+    private Set<Course> courses = new HashSet<>();
 
     @ManyToMany(mappedBy = "departments")
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Post> posts;
+    private Set<Post> posts = new HashSet<>();
 
     public Department() {}
 
-    public Department(Long id, String title, String description, String shortCode, String country, String city,
+    public Department(Long id, String departmentId, String title, String description, String country, String city,
                       Date createdAt, Date updatedAt, boolean isPublic, boolean isActive, Group group) {
         this.id = id;
+        this.departmentId = departmentId;
         this.title = title;
         this.description = description;
-        this.shortCode = shortCode;
         this.country = country;
         this.city = city;
         this.createdAt = createdAt;
@@ -62,6 +69,14 @@ public class Department {
         this.id = id;
     }
 
+    public String getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(String departmentId) {
+        this.departmentId = departmentId;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -76,14 +91,6 @@ public class Department {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getShortCode() {
-        return shortCode;
-    }
-
-    public void setShortCode(String shortCode) {
-        this.shortCode = shortCode;
     }
 
     public String getCountry() {
@@ -118,19 +125,19 @@ public class Department {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isPublic() {
+    public boolean getIsPublic() {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
+    public void setIsPublic(boolean aPublic) {
         isPublic = aPublic;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setIsActive(boolean active) {
         isActive = active;
     }
 
@@ -140,6 +147,7 @@ public class Department {
 
     public void setGroup(Group group) {
         this.group = group;
+        group.getDepartments().add(this);
     }
 
     public Set<Course> getCourses() {
