@@ -56,10 +56,6 @@ public class GroupServiceImpl implements GroupService {
         return group;
     }
 
-    private String generateGroupId() {
-        return RandomStringUtils.randomNumeric(10);
-    }
-
     @Override
     public void updateGroup(User user, String title, String abbreviation, String description, boolean isPublic, boolean isActive) {
         // TODO:
@@ -68,5 +64,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void deleteGroupById(Long id) {
         // TODO:
+    }
+
+    private String generateGroupId() {
+        return RandomStringUtils.randomNumeric(10);
     }
 }

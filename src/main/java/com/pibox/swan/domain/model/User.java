@@ -16,7 +16,9 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
+    private String userId;
     private String firstName;
     private String lastName;
     private String username;
@@ -57,9 +59,10 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String username, String password, String email, String profileImgUrl,
+    public User(Long id, String userId, String firstName, String lastName, String username, String password, String email, String profileImgUrl,
                 Date joinDate, Date lastLoginDate, String role, String[] authorities, boolean isActive) {
         this.id = id;
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -84,6 +87,14 @@ public class User implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {

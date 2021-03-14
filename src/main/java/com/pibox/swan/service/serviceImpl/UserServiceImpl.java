@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         validateNewUsernameAndEmail(EMPTY, username, email);
         User user = new User();
         String password = generatePassword();
+        user.setUserId(generateUserId());
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setUsername(username);
@@ -186,5 +187,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private String setProfileImageUrl(String username) {
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH
                 + username + DOT + JPG_EXTENSION).toUriString();
+    }
+
+    private String generateUserId() {
+        return RandomStringUtils.randomNumeric(10);
     }
 }

@@ -29,7 +29,7 @@ public class Group implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
     @JsonIdentityReference(alwaysAsId=true)
     private User groupOwner;
 
@@ -40,7 +40,7 @@ public class Group implements Serializable {
     private Set<Course> courses = new HashSet<>();
 
     @ManyToMany(mappedBy = "groups")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
     @JsonIdentityReference(alwaysAsId=true)
     private Set<User> users = new HashSet<>();
 
