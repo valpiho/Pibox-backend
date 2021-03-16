@@ -28,7 +28,7 @@ public class DepartmentController {
                                                           @RequestBody Department department) {
         Department newDepartment = departmentService.createNewDepartment(department.getTitle(),
                 department.getDescription(), department.getCountry(), department.getCity(),
-                department.getIsPublic(), groupId);
+                department.isPublic(), groupId);
         return new ResponseEntity<>(newDepartment, HttpStatus.OK);
     }
 

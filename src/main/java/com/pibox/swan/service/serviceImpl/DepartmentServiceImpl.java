@@ -41,8 +41,8 @@ public class DepartmentServiceImpl implements DepartmentService {
         department.setCountry(country);
         department.setCity(city);
         department.setCreatedAt(new Date());
-        department.setIsPublic(isPublic);
-        department.setIsActive(true);
+        department.setPublic(isPublic);
+        department.setActive(true);
         department.setGroup(groupRepository.findGroupByGroupId(groupId));
 
         departmentRepository.save(department);
