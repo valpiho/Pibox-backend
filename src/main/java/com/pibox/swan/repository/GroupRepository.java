@@ -14,9 +14,5 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     List<Group> findAllByIsActiveIsTrueAndIsPublicIsTrue();
 
-    List<Group> findAllByUsersIsContaining(User user);
-
-    List<Group> findAllByGroupOwner(User user);
-
-    List<Group> findAllByGroupOwner_Username(String username);
+    List<Group> findAllByGroupOwnerUserId(String groupOwnerUserId);
 }

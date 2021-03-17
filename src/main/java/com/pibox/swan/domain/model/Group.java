@@ -22,6 +22,7 @@ public class Group implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     private String groupId;
+    private String groupOwnerUserId;
     private String title;
     private String description;
     private String groupImgUrl;
@@ -31,12 +32,6 @@ public class Group implements Serializable {
     private boolean isPublic;
     @JsonProperty
     private boolean isActive;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
-    @JsonIdentityReference(alwaysAsId=true)
-    private User groupOwner;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Department> departments = new HashSet<>();
@@ -53,9 +48,8 @@ public class Group implements Serializable {
     private Set<Post> posts = new HashSet<>();
 
     public void setGroupOwner(User user) {
-        this.groupOwner = user;
+        this.groupOwnerUserId = user.getUserId();
         this.addUser(user);
-        user.addOwnGroup(this);
         user.addGroup(this);
     }
 

@@ -15,7 +15,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements Serializable {
-    // TODO: User isLocked ????
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,9 +36,6 @@ public class User implements Serializable {
     @JsonProperty
     private boolean isActive;
 
-    @OneToMany(mappedBy = "groupOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Group> ownGroups;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_groups",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -60,13 +56,6 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Post> posts = new HashSet<>();
-
-    public void addOwnGroup(Group group) {
-        if (this.ownGroups == null) {
-            this.ownGroups = new HashSet<>();
-        }
-        this.ownGroups.add(group);
-    }
 
     public void addGroup(Group group) {
         if (this.groups == null) {

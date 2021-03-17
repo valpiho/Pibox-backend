@@ -25,25 +25,25 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group findGroupByGroupId(String groupId) {
+    public Group getGroupByGroupId(String groupId) {
         return groupRepository.findGroupByGroupId(groupId);
     }
 
     @Override
-    public List<Group> findAllActivePublicGroups() {
+    public List<Group> getAllActivePublicGroups() {
         return groupRepository.findAllByIsActiveIsTrueAndIsPublicIsTrue();
     }
 
-    public List<Group> findAllGroupsByUser(User user) {
-        return groupRepository.findAllByUsersIsContaining(user);
+    public List<Group> getAllGroupsByUserId(String userId) {
+        return groupRepository.findAllByGroupOwnerUserId(userId);
     };
 
     @Override
-    public Group createNewGroup(User user, String title, String description, boolean isPublic) {
+    public Group createNewGroup(String groupOwnerUserId, String title, String description, boolean isPublic) {
         Group group = new Group();
-        User existsUser = userRepository.findUserByUsername(user.getUsername());
+        User user = userRepository.findUserByUserId(groupOwnerUserId);
 
-        group.setGroupOwner(existsUser);
+        group.setGroupOwner(user);
         group.setGroupId(generateGroupId());
         group.setCreatedAt(new Date());
         group.setTitle(title);

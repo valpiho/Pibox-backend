@@ -1,7 +1,6 @@
 package com.pibox.swan.controller;
 
 import com.pibox.swan.domain.model.Group;
-import com.pibox.swan.domain.model.User;
 import com.pibox.swan.service.GroupService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,23 +20,23 @@ public class GroupController {
 
     @GetMapping("/")
     public List<Group> getAllActivePublicGroups() {
-        return groupService.findAllActivePublicGroups();
+        return groupService.getAllActivePublicGroups();
     }
 
     @PostMapping("/user-groups")
-    public List<Group> getGroupsByUsername(@RequestBody User user) {
-        return groupService.findAllGroupsByUser(user);
+    public List<Group> getGroupsByUsername(@RequestBody String userId) {
+        return groupService.getAllGroupsByUserId(userId);
     }
 
     @PostMapping("/create")
     public ResponseEntity<Group> createNewGroup(@RequestBody Group group) {
-        Group newGroup = groupService.createNewGroup(group.getGroupOwner(), group.getTitle(),
+        Group newGroup = groupService.createNewGroup(group.getGroupOwnerUserId(), group.getTitle(),
                 group.getDescription(), group.isPublic());
         return new ResponseEntity<>(newGroup, HttpStatus.OK);
     }
 
     @GetMapping("/{groupId}")
     public Group getGroup(@PathVariable("groupId") String groupId){
-        return groupService.findGroupByGroupId(groupId);
+        return groupService.getGroupByGroupId(groupId);
     }
 }

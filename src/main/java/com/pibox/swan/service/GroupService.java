@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface GroupService {
 
-    Group findGroupByGroupId(String groupId);
+    Group getGroupByGroupId(String groupId);
 
-    List<Group> findAllActivePublicGroups();
+    List<Group> getAllActivePublicGroups();
 
-    List<Group> findAllGroupsByUser(User user);
+    List<Group> getAllGroupsByUserId(String userId);
 
-    Group createNewGroup(User user, String title, String description, boolean isPublic);
+    Group createNewGroup(String groupOwnerUserId, String title, String description, boolean isPublic);
 
     void updateGroup(User user, String title, String description, boolean isPublic, boolean isActive);
 
