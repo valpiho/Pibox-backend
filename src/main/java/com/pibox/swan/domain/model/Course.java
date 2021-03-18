@@ -21,6 +21,7 @@ public class Course implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
     private Long id;
+    private String courseId;
     private String title;
     private String description;
     private String shortCode;
@@ -43,5 +44,22 @@ public class Course implements Serializable {
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Post> posts = new HashSet<>();
+    private Set<Post> posts;
+
+    public void setGroup(Group group) {
+        this.group = group;
+        group.addCourse(this);
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+        department.addCourse(this);
+    }
+
+    public void addPost(Post post) {
+        if (this.posts == null) {
+            this.posts = new HashSet<>();
+        }
+        this.posts.add(post);
+    }
 }
