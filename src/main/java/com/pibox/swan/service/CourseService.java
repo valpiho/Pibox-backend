@@ -1,4 +1,4 @@
-package com.pibox.swan.service.serviceImpl;
+package com.pibox.swan.service;
 
 import com.pibox.swan.domain.model.Course;
 
