@@ -4,6 +4,7 @@ import com.pibox.swan.domain.model.Course;
 import com.pibox.swan.repository.CourseRepository;
 import com.pibox.swan.repository.DepartmentRepository;
 import com.pibox.swan.repository.GroupRepository;
+import com.pibox.swan.service.CourseService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 

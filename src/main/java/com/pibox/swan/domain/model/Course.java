@@ -24,7 +24,6 @@ public class Course implements Serializable {
     private String courseId;
     private String title;
     private String description;
-    private String shortCode;
     private Date createdAt;
     private Date updatedAt;
     @JsonProperty

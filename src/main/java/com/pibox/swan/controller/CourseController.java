@@ -1,8 +1,7 @@
 package com.pibox.swan.controller;
 
 import com.pibox.swan.domain.model.Course;
-import com.pibox.swan.domain.model.Department;
-import com.pibox.swan.service.serviceImpl.CourseService;
+import com.pibox.swan.service.CourseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/groups/{groupId}/departments/{departmentId}/courses")
+@RequestMapping("/groups/{groupId}/courses")
 public class CourseController {
 
     private final CourseService courseService;
