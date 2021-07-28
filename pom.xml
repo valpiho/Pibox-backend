@@ -81,6 +81,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-spring-boot-2-webmvc -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-spring-boot-2-webmvc</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
