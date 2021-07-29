@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/groups")
+@RequestMapping("api/v1/groups")
 public class GroupController {
 
     private final GroupService groupService;
@@ -18,7 +18,7 @@ public class GroupController {
         this.groupService = groupService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<Group> getAllActivePublicGroups() {
         return groupService.getAllActivePublicGroups();
     }
@@ -28,7 +28,7 @@ public class GroupController {
         return groupService.getAllGroupsByUserId(userId);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Group> createNewGroup(@RequestBody Group group) {
         Group newGroup = groupService.createNewGroup(group.getGroupOwnerUserId(), group.getTitle(),
                 group.getDescription(), group.isPublic());

@@ -30,7 +30,7 @@ import static com.pibox.swan.constant.SecurityConstant.JWT_TOKEN_HEADER;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
 
     private final UserService userService;

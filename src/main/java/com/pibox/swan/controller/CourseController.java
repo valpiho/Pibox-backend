@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/groups/{groupId}/courses")
+@RequestMapping("api/v1/groups/{groupId}/courses")
 public class CourseController {
 
     private final CourseService courseService;
@@ -18,12 +18,12 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<Course> getAllCourses(@PathVariable("departmentId") String departmentId) {
         return courseService.getAllCoursesByDepartment(departmentId);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Course> createNewCourse(@PathVariable("groupId") String groupId,
                                                       @PathVariable("departmentId") String departmentId,
                                                       @RequestBody Course course) {
