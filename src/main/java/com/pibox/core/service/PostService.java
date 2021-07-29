@@ -1,32 +1,73 @@
 package com.pibox.core.service;
 
 import com.pibox.core.domain.model.*;
-import com.pibox.domain.model.*;
-import com.pibox.swan.domain.model.*;
+import com.pibox.core.repository.PostRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public interface PostService {
+@Service
+public class PostService {
 
-    Post findPostById(Long id);
+    private final PostRepository postRepository;
+    private final UserService userService;
+    private final GroupService groupService;
 
-    List<Post> findAllPostsByUser(User user);
+    public PostService(PostRepository postRepository, UserService userService, GroupService groupService) {
+        this.postRepository = postRepository;
+        this.userService = userService;
+        this.groupService = groupService;
+    }
 
-    List<Post> findAllPostsByGroup(Group group);
+    public Post findPostById(Long id) {
+        // TODO:
+        return null;
+    }
 
-    List<Post> findAllPostsInGroupByUser(Group group, User user);
+    public List<Post> findAllPostsByUser(User user) {
+        // TODO:
+        return null;
+    }
 
-    List<Post> findAllPostsByDepartment(Department department);
+    public List<Post> findAllPostsByGroup(Group group) {
+        // TODO:
+        return null;
+    }
 
-    List<Post> findAllPostsInDepartmentByUser(Department department, User user);
+    public List<Post> findAllPostsInGroupByUser(Group group, User user) {
+        // TODO:
+        return null;
+    }
 
-    List<Post> findAllPostsByClass(Course course);
+    public List<Post> findAllPostsByDepartment(Department department) {
+        // TODO:
+        return null;
+    }
 
-    List<Post> findAllPostsInClassByUser(Course course, User user);
+    public List<Post> findAllPostsInDepartmentByUser(Department department, User user) {
+        // TODO:
+        return null;
+    }
 
-    void addNewPost();
+    public List<Post> findAllPostsByClass(Course course) {
+        // TODO:
+        return null;
+    }
 
-    void updatePost();
+    public List<Post> findAllPostsInClassByUser(Course course, User user) {
+        // TODO:
+        return null;
+    }
 
-    void deletePost();
+    public void addNewPost() {
+        // TODO:
+    }
+
+    public void updatePost() {
+        // TODO:
+    }
+
+    public void deletePost() {
+        // TODO:
+    }
 }
