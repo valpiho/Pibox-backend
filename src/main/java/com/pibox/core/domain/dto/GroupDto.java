@@ -1,6 +1,6 @@
 package com.pibox.core.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,10 +15,13 @@ public class GroupDto {
     private String title;
     private String description;
     private String groupImgUrl;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss", timezone = "Europe/Tallinn")
     private Date createdAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss", timezone = "Europe/Tallinn")
     private Date updatedAt;
-    @JsonProperty
+
     private boolean isPublic;
-    @JsonProperty
     private boolean isActive;
 }
