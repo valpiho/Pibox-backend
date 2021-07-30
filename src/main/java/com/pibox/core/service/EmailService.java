@@ -29,7 +29,8 @@ public class EmailService {
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email, false));
         message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(EmailConstant.CC_EMAIL, false));
         message.setSubject(EmailConstant.EMAIL_SUBJECT);
-        message.setText("Hello " + firstName + ", \n \n Your new account password is " + password + "\n \n The Support Team");
+        message.setText("Hello " + firstName + ", \n \n Your new account is created. \n " +
+                "Your password is " + password + "\n \n The Support Team");
         message.setSentDate(new Date());
         message.saveChanges();
         return message;

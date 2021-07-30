@@ -2,16 +2,10 @@ package com.pibox.core.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pibox.core.domain.model.Course;
-import com.pibox.core.domain.model.Department;
-import com.pibox.core.domain.model.Group;
-import com.pibox.core.domain.model.Post;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -29,10 +23,10 @@ public class UserDto {
     private String email;
     private String profileImgUrl;
 
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Tallinn")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss", timezone = "Europe/Tallinn")
     private Date joinDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Tallinn")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss", timezone = "Europe/Tallinn")
     private Date lastLoginDate;
 
     private String role;

@@ -2,6 +2,7 @@ package com.pibox.core.controller;
 
 import com.pibox.core.domain.HttpResponse;
 import com.pibox.core.domain.dto.UserDto;
+import com.pibox.core.domain.dto.UserLoginDto;
 import com.pibox.core.domain.dto.UserRegistrationDto;
 import com.pibox.core.domain.model.User;
 import com.pibox.core.domain.UserPrincipal;
@@ -52,23 +53,25 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public User getUser(@PathVariable("username") String username) {
-        return userService.findUserByUsername(username);
+    public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
+        User user = userService.findUserByUsername(username);
+        return new ResponseEntity<>(userMapper.userToUserDto(user), HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody UserRegistrationDto user) throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
-        User newUser = userService.registerNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getPassword(), user.getEmail());
-        return new ResponseEntity<>(userMapper.userToUserDto(newUser), HttpStatus.OK);
+    public ResponseEntity<HttpResponse> register(@RequestBody UserRegistrationDto user)
+            throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
+        userService.registerNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getPassword(), user.getEmail());
+        return response(HttpStatus.CREATED, "New user has been created");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
+    public ResponseEntity<UserDto> login(@RequestBody UserLoginDto user) {
         authenticate(user.getUsername(), user.getPassword());
         User loginUser = userService.findUserByUsername(user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
+        return new ResponseEntity<>(userMapper.userToUserDto(loginUser), jwtHeader, HttpStatus.OK);
     }
 
     @GetMapping("/reset-password/{email}")
@@ -108,6 +111,6 @@ public class UserController {
 
     private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {
         return new ResponseEntity<>(new HttpResponse(httpStatus.value(),
-                httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message), httpStatus);
+                httpStatus, httpStatus.getReasonPhrase(), message), httpStatus);
     }
 }
