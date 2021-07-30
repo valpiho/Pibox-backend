@@ -1,6 +1,5 @@
 package com.pibox.core.domain.model;
 
-import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,6 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity(name = "users")
 @Getter
@@ -19,13 +19,10 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Long id;
-    private String userId;
+    private UUID id;
     private String firstName;
     private String lastName;
     private String username;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String email;
     private String profileImgUrl;
@@ -33,7 +30,6 @@ public class User implements Serializable {
     private Date lastLoginDate;
     private String role;
     private String[] authorities;
-    @JsonProperty
     private boolean isActive;
 
     @ManyToMany(fetch = FetchType.LAZY)

@@ -1,12 +1,15 @@
 package com.pibox.core.controller;
 
 import com.pibox.core.domain.HttpResponse;
+import com.pibox.core.domain.dto.UserDto;
+import com.pibox.core.domain.dto.UserRegistrationDto;
 import com.pibox.core.domain.model.User;
 import com.pibox.core.domain.UserPrincipal;
 import com.pibox.core.exception.domain.EmailExistException;
 import com.pibox.core.exception.domain.EmailNotFoundException;
 import com.pibox.core.exception.domain.UserNotFoundException;
 import com.pibox.core.exception.domain.UsernameExistException;
+import com.pibox.core.mapper.UserMapper;
 import com.pibox.core.service.UserService;
 import com.pibox.core.utility.JWTTokenProvider;
 import org.springframework.http.HttpHeaders;
@@ -34,13 +37,16 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final JWTTokenProvider jwtTokenProvider;
 
     public UserController(UserService userService,
+                          UserMapper userMapper,
                           AuthenticationManager authenticationManager,
                           JWTTokenProvider jwtTokenProvider) {
         this.userService = userService;
+        this.userMapper = userMapper;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -51,9 +57,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
-        User newUser = userService.registerNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
-        return new ResponseEntity<>(newUser, HttpStatus.OK);
+    public ResponseEntity<UserDto> register(@RequestBody UserRegistrationDto user) throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
+        User newUser = userService.registerNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getPassword(), user.getEmail());
+        return new ResponseEntity<>(userMapper.userToUserDto(newUser), HttpStatus.OK);
     }
 
     @PostMapping("/login")

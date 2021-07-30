@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/groups")
@@ -24,13 +25,13 @@ public class GroupController {
     }
 
     @PostMapping("/user-groups")
-    public List<Group> getGroupsByUsername(@RequestBody String userId) {
-        return groupService.getAllGroupsByUserId(userId);
+    public List<Group> getGroupsByUsername(@RequestBody UUID userId) {
+        return groupService.getAllGroupsByOwnerId(userId);
     }
 
     @PostMapping
     public ResponseEntity<Group> createNewGroup(@RequestBody Group group) {
-        Group newGroup = groupService.createNewGroup(group.getGroupOwnerUserId(), group.getTitle(),
+        Group newGroup = groupService.createNewGroup(group.getGroupOwnerId(), group.getTitle(),
                 group.getDescription(), group.isPublic());
         return new ResponseEntity<>(newGroup, HttpStatus.OK);
     }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -31,13 +32,13 @@ public class GroupService {
         return groupRepository.findAllByIsActiveIsTrueAndIsPublicIsTrue();
     }
 
-    public List<Group> getAllGroupsByUserId(String userId) {
-        return groupRepository.findAllByGroupOwnerUserId(userId);
+    public List<Group> getAllGroupsByOwnerId(UUID userId) {
+        return groupRepository.findAllByGroupOwnerId(userId);
     };
 
-    public Group createNewGroup(String groupOwnerUserId, String title, String description, boolean isPublic) {
+    public Group createNewGroup(UUID groupOwnerId, String title, String description, boolean isPublic) {
         Group group = new Group();
-        User user = userRepository.findUserByUserId(groupOwnerUserId);
+        User user = userRepository.findUserById(groupOwnerId);
 
         group.setGroupOwner(user);
         group.setGroupId(generateGroupId());

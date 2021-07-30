@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity(name = "hobby_groups")
 @Setter
@@ -22,7 +23,7 @@ public class Group implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     private String groupId;
-    private String groupOwnerUserId;
+    private UUID groupOwnerId;
     private String title;
     private String description;
     private String groupImgUrl;
@@ -48,7 +49,7 @@ public class Group implements Serializable {
     private Set<Post> posts;
 
     public void setGroupOwner(User user) {
-        this.groupOwnerUserId = user.getUserId();
+        this.groupOwnerId = user.getId();
         this.addUser(user);
         user.addGroup(this);
     }
