@@ -7,9 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/groups/{groupId}/departments")
+@RequestMapping("api/v1/groups/{id}/departments")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -19,16 +20,16 @@ public class DepartmentController {
     }
 
     @GetMapping
-    public List<Department> getAllActiveDepartments(@PathVariable("groupId") String groupId) {
-        return departmentService.findAllActiveDepartments(groupId);
+    public List<Department> getAllActiveDepartments(@PathVariable("id") UUID id) {
+        return departmentService.findAllActiveDepartments(id);
     }
 
     @PostMapping
-    public ResponseEntity<Department> createNewDepartment(@PathVariable("groupId") String groupId,
+    public ResponseEntity<Department> createNewDepartment(@PathVariable("id") UUID id,
                                                           @RequestBody Department department) {
         Department newDepartment = departmentService.createNewDepartment(department.getTitle(),
                 department.getDescription(), department.getCountry(), department.getCity(),
-                department.isPublic(), groupId);
+                department.isPublic(), id);
         return new ResponseEntity<>(newDepartment, HttpStatus.OK);
     }
 

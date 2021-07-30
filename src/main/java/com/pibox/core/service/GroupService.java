@@ -24,8 +24,8 @@ public class GroupService {
         this.userRepository = userRepository;
     }
 
-    public Group getGroupByGroupId(String groupId) {
-        return groupRepository.findGroupByGroupId(groupId);
+    public Group getGroupByGroupId(UUID id) {
+        return groupRepository.findGroupById(id);
     }
 
     public List<Group> getAllActivePublicGroups() {
@@ -41,7 +41,6 @@ public class GroupService {
         User user = userRepository.findUserById(groupOwnerId);
 
         group.setGroupOwner(user);
-        group.setGroupId(generateGroupId());
         group.setCreatedAt(new Date());
         group.setTitle(title);
         group.setDescription(description);
@@ -56,11 +55,7 @@ public class GroupService {
         // TODO:
     }
 
-    public void deleteGroupById(Long id) {
+    public void deleteGroupById(UUID id) {
         // TODO:
-    }
-
-    private String generateGroupId() {
-        return RandomStringUtils.randomNumeric(10);
     }
 }

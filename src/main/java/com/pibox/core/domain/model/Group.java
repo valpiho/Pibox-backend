@@ -20,18 +20,14 @@ public class Group implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Long id;
-    private String groupId;
+    private UUID id;
     private UUID groupOwnerId;
     private String title;
     private String description;
     private String groupImgUrl;
     private Date createdAt;
     private Date updatedAt;
-    @JsonProperty
     private boolean isPublic;
-    @JsonProperty
     private boolean isActive;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -41,7 +37,7 @@ public class Group implements Serializable {
     private Set<Course> courses;
 
     @ManyToMany(mappedBy = "groups")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId=true)
     private Set<User> users;
 

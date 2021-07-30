@@ -36,8 +36,8 @@ public class GroupController {
         return new ResponseEntity<>(newGroup, HttpStatus.OK);
     }
 
-    @GetMapping("/{groupId}")
-    public Group getGroup(@PathVariable("groupId") String groupId){
-        return groupService.getGroupByGroupId(groupId);
+    @GetMapping("/{id}")
+    public Group getGroup(@PathVariable("id") UUID id){
+        return groupService.getGroupByGroupId(id);
     }
 }
