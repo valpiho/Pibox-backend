@@ -37,15 +37,13 @@ public class Group implements Serializable {
     private Set<Course> courses;
 
     @ManyToMany(mappedBy = "groups")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId=true)
     private Set<User> users;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Post> posts;
 
     public void setGroupOwner(User user) {
-        this.groupOwnerId = user.getId();
+        this.groupOwnerId = user.getUserId();
         this.addUser(user);
         user.addGroup(this);
     }

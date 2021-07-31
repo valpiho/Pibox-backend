@@ -95,13 +95,13 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public User updateUserById(UUID id, String firstName, String lastName, String username, String email, String role, boolean isActive) {
+    public User updateUserByUserId(UUID userId, String firstName, String lastName, String username, String email, String role, boolean isActive) {
         // TODO: User update
         return null;
     }
 
-    public void deleteUserById(UUID id) {
-        userRepository.deleteUserById(id);
+    public void deleteUserByUserId(UUID userId) {
+        userRepository.deleteUserByUserId(userId);
     }
 
     public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
@@ -125,10 +125,10 @@ public class UserService implements UserDetailsService {
             if (currentUsername == null) {
                 throw new UserNotFoundException("No user found by username");
             }
-            if (userByNewUsername != null && !currentUser.getId().equals(userByNewUsername.getId())) {
+            if (userByNewUsername != null && !currentUser.getUserId().equals(userByNewUsername.getUserId())) {
                 throw new UsernameExistException("Username already exists");
             }
-            if (userByNewEmail != null && !currentUser.getId().equals(userByNewEmail.getId())) {
+            if (userByNewEmail != null && !currentUser.getUserId().equals(userByNewEmail.getUserId())) {
                 throw new EmailExistException("Email already exists");
             }
             return currentUser;

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 public class UserDto {
 
-    private UUID id;
+    private UUID userId;
     private String firstName;
     private String lastName;
     private String username;
@@ -23,10 +23,10 @@ public class UserDto {
     private String email;
     private String profileImgUrl;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss", timezone = "Europe/Tallinn")
+    @JsonFormat(timezone = "Europe/Tallinn")
     private Date joinDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss", timezone = "Europe/Tallinn")
+    @JsonFormat(timezone = "Europe/Tallinn")
     private Date lastLoginDate;
 
     private String role;

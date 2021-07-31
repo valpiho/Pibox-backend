@@ -19,7 +19,7 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private UUID id;
+    private UUID userId;
     private String firstName;
     private String lastName;
     private String username;
@@ -34,19 +34,19 @@ public class User implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_groups",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"))
     private Set<Group> groups;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_departments",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(name = "department_id", referencedColumnName = "id"))
     private Set<Department> departments;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_courses",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"))
     private Set<Course> courses;
 

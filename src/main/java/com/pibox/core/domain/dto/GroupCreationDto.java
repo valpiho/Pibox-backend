@@ -12,5 +12,4 @@ public class GroupCreationDto {
     private String title;
     private String description;
     private boolean isPublic;
-    private boolean isActive;
 }

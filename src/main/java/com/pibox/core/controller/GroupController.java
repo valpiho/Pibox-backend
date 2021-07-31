@@ -26,9 +26,9 @@ public class GroupController {
         this.groupMapper = groupMapper;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GroupDto> getGroupById(@PathVariable("id") UUID id){
-        Group group = groupService.getGroupByGroupId(id);
+    @GetMapping("/{groupId}")
+    public ResponseEntity<GroupDto> getGroupById(@PathVariable("groupId") UUID groupId){
+        Group group = groupService.getGroupByGroupId(groupId);
         return new ResponseEntity<>( groupMapper.toGroupDto(group), HttpStatus.OK);
     }
 
@@ -39,8 +39,8 @@ public class GroupController {
         return new ResponseEntity<>(groupsDtoList, HttpStatus.OK);
     }
 
-    @PostMapping("/user-groups")
-    public ResponseEntity<List<GroupDto>> getGroupsByUsername(@RequestBody UUID userId) {
+    @GetMapping("/user-groups/{userId}")
+    public ResponseEntity<List<GroupDto>> getGroupsByUsername(@PathVariable("userId") UUID userId) {
         List<Group> groups = groupService.getAllGroupsByOwnerId(userId);
         List<GroupDto> groupsDtoList = groups.stream().map(groupMapper::toGroupDto).collect(Collectors.toList());
         return new ResponseEntity<>(groupsDtoList, HttpStatus.OK);

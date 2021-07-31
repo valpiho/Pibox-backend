@@ -24,8 +24,8 @@ public class GroupService {
         this.userRepository = userRepository;
     }
 
-    public Group getGroupByGroupId(UUID id) {
-        return groupRepository.findGroupById(id);
+    public Group getGroupByGroupId(UUID groupId) {
+        return groupRepository.findGroupById(groupId);
     }
 
     public List<Group> getAllActivePublicGroups() {
@@ -36,9 +36,9 @@ public class GroupService {
         return groupRepository.findAllByGroupOwnerId(userId);
     };
 
-    public Group createNewGroup(UUID groupOwnerId, String title, String description, boolean isPublic) {
+    public Group createNewGroup(UUID groupOwnerUserId, String title, String description, boolean isPublic) {
         Group group = new Group();
-        User user = userRepository.findUserById(groupOwnerId);
+        User user = userRepository.findUserByUserId(groupOwnerUserId);
 
         group.setGroupOwner(user);
         group.setCreatedAt(new Date());
@@ -55,7 +55,7 @@ public class GroupService {
         // TODO:
     }
 
-    public void deleteGroupById(UUID id) {
+    public void deleteGroupByGroupId(UUID groupId) {
         // TODO:
     }
 }
