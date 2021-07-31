@@ -25,14 +25,13 @@ public class DepartmentService {
     }
 
     public List<Department> findAllActiveDepartments(UUID id) {
-        return departmentRepository.findAllByGroup_Id(id);
+        return departmentRepository.findAllByGroup_GroupId(id);
     }
 
     public Department createNewDepartment(String title, String description,
-                                          String country, String city, boolean isPublic, UUID id) {
+                                          String country, String city, boolean isPublic, UUID groupId) {
         Department department = new Department();
 
-        department.setDepartmentId(generateDepartmentId());
         department.setTitle(title);
         department.setDescription(description);
         department.setCountry(country);
@@ -40,17 +39,13 @@ public class DepartmentService {
         department.setCreatedAt(new Date());
         department.setPublic(isPublic);
         department.setActive(true);
-        department.setGroup(groupRepository.findGroupById(id));
+        department.setGroup(groupRepository.findGroupByGroupId(groupId));
 
         departmentRepository.save(department);
         return department;
     }
 
-    public Department findDepartmentByGroupId(String departmentId) {
+    public Department findDepartmentByGroupId(UUID departmentId) {
         return departmentRepository.findByDepartmentId(departmentId);
-    }
-
-    private String generateDepartmentId() {
-        return RandomStringUtils.randomNumeric(10);
     }
 }

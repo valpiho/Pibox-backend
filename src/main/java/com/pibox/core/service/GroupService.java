@@ -25,7 +25,7 @@ public class GroupService {
     }
 
     public Group getGroupByGroupId(UUID groupId) {
-        return groupRepository.findGroupById(groupId);
+        return groupRepository.findGroupByGroupId(groupId);
     }
 
     public List<Group> getAllActivePublicGroups() {

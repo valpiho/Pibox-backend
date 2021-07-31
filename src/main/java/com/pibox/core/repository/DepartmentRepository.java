@@ -10,7 +10,7 @@ import java.util.UUID;
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, UUID> {
 
-    List<Department> findAllByGroup_Id(UUID id);
+    List<Department> findAllByGroup_GroupId(UUID id);
 
-    Department findByDepartmentId(String departmentId);
+    Department findByDepartmentId(UUID departmentId);
 }

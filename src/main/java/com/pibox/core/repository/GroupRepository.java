@@ -10,7 +10,7 @@ import java.util.UUID;
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
-    Group findGroupById(UUID id);
+    Group findGroupByGroupId(UUID id);
 
     List<Group> findAllByIsActiveIsTrueAndIsPublicIsTrue();
 

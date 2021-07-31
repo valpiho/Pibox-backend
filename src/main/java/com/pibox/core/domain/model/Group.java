@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Entity(name = "hobby_groups")
+@Entity(name = "groups")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -20,7 +20,7 @@ public class Group implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private UUID id;
+    private UUID groupId;
     private UUID groupOwnerId;
     private String title;
     private String description;

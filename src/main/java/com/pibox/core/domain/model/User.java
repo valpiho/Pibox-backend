@@ -35,13 +35,13 @@ public class User implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_groups",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "groupId"))
     private Set<Group> groups;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_departments",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "department_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "department_id", referencedColumnName = "departmentId"))
     private Set<Department> departments;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -79,6 +79,14 @@ public class User implements Serializable {
             this.posts = new HashSet<>();
         }
         this.posts.add(post);
+    }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }
 

@@ -1,6 +1,6 @@
 package com.pibox.core.controller;
 
-import com.pibox.core.domain.dto.GroupCreationDto;
+import com.pibox.core.domain.dto.NewGroupDto;
 import com.pibox.core.domain.dto.GroupDto;
 import com.pibox.core.domain.model.Group;
 import com.pibox.core.mapper.GroupMapper;
@@ -47,7 +47,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<GroupDto> createNewGroup(@RequestBody GroupCreationDto group) {
+    public ResponseEntity<GroupDto> createNewGroup(@RequestBody NewGroupDto group) {
         Group newGroup = groupService.createNewGroup(group.getGroupOwnerId(), group.getTitle(),
                 group.getDescription(), group.isPublic());
         return new ResponseEntity<>(groupMapper.toGroupDto(newGroup), HttpStatus.OK);
