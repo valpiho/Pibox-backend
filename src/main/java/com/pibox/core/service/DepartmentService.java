@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -23,12 +24,12 @@ public class DepartmentService {
         this.groupRepository = groupRepository;
     }
 
-    public List<Department> findAllActiveDepartments(String groupId) {
-        return departmentRepository.findAllByGroup_GroupId(groupId);
+    public List<Department> findAllActiveDepartments(UUID id) {
+        return departmentRepository.findAllByGroup_Id(id);
     }
 
     public Department createNewDepartment(String title, String description,
-                                          String country, String city, boolean isPublic, String groupId) {
+                                          String country, String city, boolean isPublic, UUID id) {
         Department department = new Department();
 
         department.setDepartmentId(generateDepartmentId());
@@ -39,7 +40,7 @@ public class DepartmentService {
         department.setCreatedAt(new Date());
         department.setPublic(isPublic);
         department.setActive(true);
-        department.setGroup(groupRepository.findGroupByGroupId(groupId));
+        department.setGroup(groupRepository.findGroupById(id));
 
         departmentRepository.save(department);
         return department;

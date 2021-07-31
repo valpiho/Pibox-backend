@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -70,25 +71,22 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByEmail(email);
     }
 
-    public User registerNewUser(String firstName, String lastName, String username, String email)
+    public User registerNewUser(String newFirstName, String newLastName, String newUsername, String newPassword, String newEmail)
             throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
-        validateNewUsernameAndEmail(EMPTY, username, email);
+        validateNewUsernameAndEmail(EMPTY, newUsername, newEmail);
         User user = new User();
-        String password = generatePassword();
-        user.setUserId(generateUserId());
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setUsername(username);
-        user.setEmail(email);
+        user.setFirstName(newFirstName);
+        user.setLastName(newLastName);
+        user.setUsername(newUsername);
+        user.setEmail(newEmail);
         user.setJoinDate(new Date());
-        user.setPassword(encodePassword(password));
+        user.setPassword(encodePassword(newPassword));
         user.setActive(true);
         user.setRole(Role.ROLE_USER.name());
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
-        user.setProfileImgUrl(getTemporaryProfileImageUrl(username));
+        user.setProfileImgUrl(getTemporaryProfileImageUrl(newUsername));
         userRepository.save(user);
-        emailService.sendNewPasswordEmail(firstName, password, email);
-//        LOGGER.info("New user password: " + password);
+        emailService.sendNewPasswordEmail(newFirstName, newPassword, newEmail);
         return user;
     }
 
@@ -97,13 +95,13 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public User updateUserById(Long id, String firstName, String lastName, String username, String email, String role, boolean isActive) {
+    public User updateUserByUserId(UUID userId, String firstName, String lastName, String username, String email, String role, boolean isActive) {
         // TODO: User update
         return null;
     }
 
-    public void deleteUserById(Long id) {
-        userRepository.deleteUserById(id);
+    public void deleteUserByUserId(UUID userId) {
+        userRepository.deleteUserByUserId(userId);
     }
 
     public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
@@ -127,10 +125,10 @@ public class UserService implements UserDetailsService {
             if (currentUsername == null) {
                 throw new UserNotFoundException("No user found by username");
             }
-            if (userByNewUsername != null && !currentUser.getId().equals(userByNewUsername.getId())) {
+            if (userByNewUsername != null && !currentUser.getUserId().equals(userByNewUsername.getUserId())) {
                 throw new UsernameExistException("Username already exists");
             }
-            if (userByNewEmail != null && !currentUser.getId().equals(userByNewEmail.getId())) {
+            if (userByNewEmail != null && !currentUser.getUserId().equals(userByNewEmail.getUserId())) {
                 throw new EmailExistException("Email already exists");
             }
             return currentUser;
@@ -178,9 +176,5 @@ public class UserService implements UserDetailsService {
     private String setProfileImageUrl(String username) {
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(FileConstant.USER_IMAGE_PATH + username + FileConstant.FORWARD_SLASH
                 + username + FileConstant.DOT + FileConstant.JPG_EXTENSION).toUriString();
-    }
-
-    private String generateUserId() {
-        return RandomStringUtils.randomNumeric(10);
     }
 }

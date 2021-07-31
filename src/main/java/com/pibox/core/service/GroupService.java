@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -23,24 +24,23 @@ public class GroupService {
         this.userRepository = userRepository;
     }
 
-    public Group getGroupByGroupId(String groupId) {
-        return groupRepository.findGroupByGroupId(groupId);
+    public Group getGroupByGroupId(UUID groupId) {
+        return groupRepository.findGroupById(groupId);
     }
 
     public List<Group> getAllActivePublicGroups() {
         return groupRepository.findAllByIsActiveIsTrueAndIsPublicIsTrue();
     }
 
-    public List<Group> getAllGroupsByUserId(String userId) {
-        return groupRepository.findAllByGroupOwnerUserId(userId);
+    public List<Group> getAllGroupsByOwnerId(UUID userId) {
+        return groupRepository.findAllByGroupOwnerId(userId);
     };
 
-    public Group createNewGroup(String groupOwnerUserId, String title, String description, boolean isPublic) {
+    public Group createNewGroup(UUID groupOwnerUserId, String title, String description, boolean isPublic) {
         Group group = new Group();
         User user = userRepository.findUserByUserId(groupOwnerUserId);
 
         group.setGroupOwner(user);
-        group.setGroupId(generateGroupId());
         group.setCreatedAt(new Date());
         group.setTitle(title);
         group.setDescription(description);
@@ -55,11 +55,7 @@ public class GroupService {
         // TODO:
     }
 
-    public void deleteGroupById(Long id) {
+    public void deleteGroupByGroupId(UUID groupId) {
         // TODO:
-    }
-
-    private String generateGroupId() {
-        return RandomStringUtils.randomNumeric(10);
     }
 }

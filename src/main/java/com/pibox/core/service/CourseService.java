@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -28,14 +29,14 @@ public class CourseService {
         return courseRepository.findAllByDepartment_DepartmentId(departmentId);
     }
 
-    public Course createNewCourse(String title, String description, boolean isPublic, String groupId, String departmentId) {
+    public Course createNewCourse(String title, String description, boolean isPublic, UUID id, String departmentId) {
         Course course = new Course();
 
         course.setCourseId(generateCourseId());
         course.setTitle(title);
         course.setDescription(description);
         course.setPublic(isPublic);
-        course.setGroup(groupRepository.findGroupByGroupId(groupId));
+        course.setGroup(groupRepository.findGroupById(id));
         course.setDepartment(departmentRepository.findByDepartmentId(departmentId));
 
         courseRepository.save(course);

@@ -7,9 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/groups/{groupId}/courses")
+@RequestMapping("api/v1/groups/{id}/courses")
 public class CourseController {
 
     private final CourseService courseService;
@@ -24,10 +25,10 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<Course> createNewCourse(@PathVariable("groupId") String groupId,
+    public ResponseEntity<Course> createNewCourse(@PathVariable("id") UUID id,
                                                       @PathVariable("departmentId") String departmentId,
                                                       @RequestBody Course course) {
-        Course newCourse = courseService.createNewCourse(course.getTitle(), course.getDescription(), course.isPublic(), groupId, departmentId);
+        Course newCourse = courseService.createNewCourse(course.getTitle(), course.getDescription(), course.isPublic(), id, departmentId);
         return new ResponseEntity<>(newCourse, HttpStatus.OK);
     }
 
