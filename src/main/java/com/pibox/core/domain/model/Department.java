@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity(name = "departments")
 @Data
@@ -23,24 +24,18 @@ public class Department implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Long id;
-    private String departmentId;
+    private UUID departmentId;
     private String title;
     private String description;
     private String country; // TODO: Enum ???? Default inherits from Group
     private String city; // TODO: Enum ???? Default inherits from Group
     private Date createdAt;
     private Date updatedAt;
-    @JsonProperty
     private boolean isPublic;
-    @JsonProperty
     private boolean isActive;
 
     @ManyToOne()
-    @JoinColumn(name = "group_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "groupId")
-    @JsonIdentityReference(alwaysAsId=true)
+    @JoinColumn(name = "groupId")
     private Group group;
 
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -3,13 +3,12 @@ package com.pibox.core.domain.dto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
 @Builder
-public class GroupCreationDto {
-    private UUID groupOwnerId;
+public class NewDepartmentDto {
     private String title;
     private String description;
+    private String country;
+    private String city;
     private boolean isPublic;
 }

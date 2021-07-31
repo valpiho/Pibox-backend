@@ -81,7 +81,7 @@ public class UserService implements UserDetailsService {
         user.setEmail(newEmail);
         user.setJoinDate(new Date());
         user.setPassword(encodePassword(newPassword));
-        user.setActive(true);
+        user.setIsActive(true);
         user.setRole(Role.ROLE_USER.name());
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
         user.setProfileImgUrl(getTemporaryProfileImageUrl(newUsername));

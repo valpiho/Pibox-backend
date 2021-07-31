@@ -29,14 +29,14 @@ public class CourseService {
         return courseRepository.findAllByDepartment_DepartmentId(departmentId);
     }
 
-    public Course createNewCourse(String title, String description, boolean isPublic, UUID id, String departmentId) {
+    public Course createNewCourse(String title, String description, boolean isPublic, UUID groupId, UUID departmentId) {
         Course course = new Course();
 
         course.setCourseId(generateCourseId());
         course.setTitle(title);
         course.setDescription(description);
         course.setPublic(isPublic);
-        course.setGroup(groupRepository.findGroupById(id));
+        course.setGroup(groupRepository.findGroupByGroupId(groupId));
         course.setDepartment(departmentRepository.findByDepartmentId(departmentId));
 
         courseRepository.save(course);

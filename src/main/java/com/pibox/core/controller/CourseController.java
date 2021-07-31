@@ -26,7 +26,7 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<Course> createNewCourse(@PathVariable("id") UUID id,
-                                                      @PathVariable("departmentId") String departmentId,
+                                                      @PathVariable("departmentId") UUID departmentId,
                                                       @RequestBody Course course) {
         Course newCourse = courseService.createNewCourse(course.getTitle(), course.getDescription(), course.isPublic(), id, departmentId);
         return new ResponseEntity<>(newCourse, HttpStatus.OK);
