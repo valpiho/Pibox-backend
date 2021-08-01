@@ -10,6 +10,7 @@ import com.pibox.core.domain.model.User;
 import com.pibox.core.domain.UserPrincipal;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +34,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import static com.pibox.core.constant.FileConstant.DEFAULT_USER_IMAGE_PATH;
+import static com.pibox.core.constant.FileConstant.USER_FOLDER;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.http.MediaType.*;
@@ -112,8 +115,11 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public void deleteUserByUserId(UUID userId) {
-        userRepository.deleteUserByUserId(userId);
+    public void deleteUserByUserId(UUID userId) throws IOException {
+        User user = userRepository.findUserByUserId(userId);
+        Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
+        FileUtils.deleteDirectory(new File(userFolder.toString()));
+        userRepository.deleteById(user.getUserId());
     }
 
     public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
@@ -173,7 +179,7 @@ public class UserService implements UserDetailsService {
             if(!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
                 throw new NotAnImageFileException(profileImage.getOriginalFilename() + FileConstant.NOT_AN_IMAGE_FILE);
             }
-            Path userFolder = Paths.get(FileConstant.USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
+            Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
             if(!Files.exists(userFolder)) {
                 Files.createDirectories(userFolder);
                 LOGGER.info(FileConstant.DIRECTORY_CREATED + userFolder);

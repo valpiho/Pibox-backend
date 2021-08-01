@@ -13,6 +13,7 @@ import com.pibox.core.utility.JWTTokenProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static com.pibox.core.constant.SecurityConstant.JWT_TOKEN_HEADER;
 
@@ -86,6 +88,13 @@ public class UserController {
             throws UserNotFoundException, UsernameExistException, EmailExistException, IOException, NotAnImageFileException {
         User user = userService.updateProfileImage(username, profileImage);
         return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
+    }
+
+    @DeleteMapping("{userId}")
+    @PreAuthorize("hasAnyAuthority('user:delete')")
+    public ResponseEntity<HttpResponse> deleteUser(@PathVariable("userId")UUID userId) throws IOException {
+        userService.deleteUserByUserId(userId);
+        return response(HttpStatus.NO_CONTENT, "User was deleted");
     }
 
     private void authenticate(String username, String password) {
