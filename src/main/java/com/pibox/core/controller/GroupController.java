@@ -1,5 +1,6 @@
 package com.pibox.core.controller;
 
+import com.pibox.core.domain.HttpResponse;
 import com.pibox.core.domain.dto.NewGroupDto;
 import com.pibox.core.domain.dto.GroupDto;
 import com.pibox.core.domain.model.Group;
@@ -63,5 +64,17 @@ public class GroupController {
             throws NotFoundException, IOException, NotAnImageFileException {
         Group group = groupService.updateGroupProfileImage(groupId, profileImage);
         return new ResponseEntity<>(groupMapper.toGroupDto(group), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<HttpResponse> deleteGroup(@PathVariable("groupId") UUID groupId)
+            throws NotFoundException, IOException {
+        groupService.deleteGroupByGroupId(groupId);
+        return response(HttpStatus.NO_CONTENT, "Group was deleted");
+    }
+
+    private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(),
+                httpStatus, httpStatus.getReasonPhrase(), message), httpStatus);
     }
 }

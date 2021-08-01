@@ -1,14 +1,13 @@
 package com.pibox.core.service;
 
 import com.pibox.core.constant.FileConstant;
-import com.pibox.core.exception.domain.EmailExistException;
 import com.pibox.core.exception.domain.NotAnImageFileException;
 import com.pibox.core.exception.domain.NotFoundException;
-import com.pibox.core.exception.domain.UsernameExistException;
 import com.pibox.core.repository.GroupRepository;
 import com.pibox.core.repository.UserRepository;
 import com.pibox.core.domain.model.Group;
 import com.pibox.core.domain.model.User;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -73,8 +73,14 @@ public class GroupService {
         // TODO:
     }
 
-    public void deleteGroupByGroupId(UUID groupId) {
-        // TODO:
+    public void deleteGroupByGroupId(UUID groupId) throws IOException, NotFoundException {
+        Group group = groupRepository.findGroupByGroupId(groupId);
+        if (group == null) {
+            throw new NotFoundException("No group found by groupId: " + groupId);
+        }
+        Path groupFolder = Paths.get(GROUP_FOLDER + groupId.toString()).toAbsolutePath().normalize();
+        FileUtils.deleteDirectory(new File(groupFolder.toString()));
+        groupRepository.delete(group);
     }
 
     public Group updateGroupProfileImage(UUID groupId, MultipartFile profileImage)
