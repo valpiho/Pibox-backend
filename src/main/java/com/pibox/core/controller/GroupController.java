@@ -3,12 +3,16 @@ package com.pibox.core.controller;
 import com.pibox.core.domain.dto.NewGroupDto;
 import com.pibox.core.domain.dto.GroupDto;
 import com.pibox.core.domain.model.Group;
+import com.pibox.core.exception.domain.NotAnImageFileException;
+import com.pibox.core.exception.domain.NotFoundException;
 import com.pibox.core.mapper.GroupMapper;
 import com.pibox.core.service.GroupService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -51,5 +55,13 @@ public class GroupController {
         Group newGroup = groupService.createNewGroup(group.getGroupOwnerId(), group.getTitle(),
                 group.getDescription(), group.isPublic());
         return new ResponseEntity<>(groupMapper.toGroupDto(newGroup), HttpStatus.OK);
+    }
+
+    @PostMapping("/updateProfileImage")
+    public ResponseEntity<GroupDto> updateProfileImage(@RequestParam("groupId") UUID groupId,
+                                                      @RequestParam(value = "profileImage") MultipartFile profileImage)
+            throws NotFoundException, IOException, NotAnImageFileException {
+        Group group = groupService.updateGroupProfileImage(groupId, profileImage);
+        return new ResponseEntity<>(groupMapper.toGroupDto(group), HttpStatus.OK);
     }
 }

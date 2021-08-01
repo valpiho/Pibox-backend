@@ -3,7 +3,7 @@ package com.pibox.core.exception;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.pibox.core.exception.domain.EmailExistException;
 import com.pibox.core.exception.domain.EmailNotFoundException;
-import com.pibox.core.exception.domain.UserNotFoundException;
+import com.pibox.core.exception.domain.NotFoundException;
 import com.pibox.core.exception.domain.UsernameExistException;
 import com.pibox.core.domain.HttpResponse;
 import org.slf4j.Logger;
@@ -80,8 +80,8 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<HttpResponse> userNotFoundException(NotFoundException exception) {
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 

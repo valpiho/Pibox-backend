@@ -47,8 +47,8 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<HttpResponse> register(@RequestBody UserRegistrationDto user)
-            throws UsernameExistException, EmailExistException, UserNotFoundException{
-        userService.registerNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getPassword(), user.getEmail());
+            throws UsernameExistException, EmailExistException, NotFoundException {
+        userService.registerNewUser(user);
         return response(HttpStatus.CREATED, "New user has been created");
     }
 
@@ -77,7 +77,7 @@ public class UserController {
     public ResponseEntity<UserDto> updateUser(@PathVariable("username") String username,
                                               @RequestBody UserDto userDto,
                                               @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
-            throws UserNotFoundException, EmailExistException, IOException, UsernameExistException, NotAnImageFileException {
+            throws NotFoundException, EmailExistException, IOException, UsernameExistException, NotAnImageFileException {
         User user = userService.updateUserByUsername(username, userDto, profileImage);
         return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
     }
@@ -85,14 +85,15 @@ public class UserController {
     @PostMapping("/updateProfileImage")
     public ResponseEntity<UserDto> updateProfileImage(@RequestParam("username") String username,
                                                    @RequestParam(value = "profileImage") MultipartFile profileImage)
-            throws UserNotFoundException, UsernameExistException, EmailExistException, IOException, NotAnImageFileException {
+            throws NotFoundException, IOException, NotAnImageFileException {
         User user = userService.updateProfileImage(username, profileImage);
         return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
     }
 
     @DeleteMapping("{userId}")
     @PreAuthorize("hasAnyAuthority('user:delete')")
-    public ResponseEntity<HttpResponse> deleteUser(@PathVariable("userId")UUID userId) throws IOException {
+    public ResponseEntity<HttpResponse> deleteUser(@PathVariable("userId")UUID userId)
+            throws IOException, NotFoundException {
         userService.deleteUserByUserId(userId);
         return response(HttpStatus.NO_CONTENT, "User was deleted");
     }

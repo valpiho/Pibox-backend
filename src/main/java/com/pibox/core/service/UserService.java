@@ -3,6 +3,7 @@ package com.pibox.core.service;
 import com.pibox.core.constant.FileConstant;
 import com.pibox.core.constant.UserImplConstant;
 import com.pibox.core.domain.dto.UserDto;
+import com.pibox.core.domain.dto.UserRegistrationDto;
 import com.pibox.core.enumeration.Role;
 import com.pibox.core.exception.domain.*;
 import com.pibox.core.repository.UserRepository;
@@ -76,20 +77,20 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByEmail(email);
     }
 
-    public void registerNewUser(String newFirstName, String newLastName, String newUsername, String newPassword, String newEmail)
-            throws UsernameExistException, EmailExistException, UserNotFoundException {
-        validateNewUsernameAndEmail(EMPTY, newUsername, newEmail);
+    public void registerNewUser(UserRegistrationDto newUser)
+            throws UsernameExistException, EmailExistException, NotFoundException {
+        validateNewUsernameAndEmail(EMPTY, newUser.getUsername(), newUser.getEmail());
         User user = new User();
-        user.setFirstName(newFirstName);
-        user.setLastName(newLastName);
-        user.setUsername(newUsername);
-        user.setEmail(newEmail);
+        user.setFirstName(newUser.getFirstName());
+        user.setLastName(newUser.getLastName());
+        user.setUsername(newUser.getUsername());
+        user.setEmail(newUser.getEmail());
         user.setJoinDate(new Date());
-        user.setPassword(encodePassword(newPassword));
+        user.setPassword(encodePassword(newUser.getPassword()));
         user.setIsActive(true);
         user.setRole(Role.ROLE_USER.name());
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
-        user.setProfileImgUrl(getTemporaryProfileImageUrl(newUsername));
+        user.setProfileImgUrl(getUserTemporaryProfileImageUrl(newUser.getUsername()));
         userRepository.save(user);
 //        emailService.sendNewPasswordEmail(newFirstName, newPassword, newEmail);
     }
@@ -100,7 +101,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User updateUserByUsername(String username, UserDto newUser, MultipartFile profileImage)
-            throws UserNotFoundException, EmailExistException, UsernameExistException, IOException, NotAnImageFileException {
+            throws NotFoundException, EmailExistException, UsernameExistException, IOException, NotAnImageFileException {
         User user = validateNewUsernameAndEmail(username, newUser.getUsername(), newUser.getEmail());
         user.setFirstName(newUser.getFirstName());
         user.setLastName(newUser.getLastName());
@@ -115,8 +116,11 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public void deleteUserByUserId(UUID userId) throws IOException {
+    public void deleteUserByUserId(UUID userId) throws IOException, NotFoundException {
         User user = userRepository.findUserByUserId(userId);
+        if (user == null) {
+            throw new NotFoundException("No user found by userId: " + userId);
+        }
         Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
         FileUtils.deleteDirectory(new File(userFolder.toString()));
         userRepository.deleteById(user.getUserId());
@@ -133,20 +137,24 @@ public class UserService implements UserDetailsService {
         emailService.sendNewPasswordEmail(user.getFirstName(), password, user.getEmail());
     }
 
-    public User updateProfileImage(String username, MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException, NotAnImageFileException {
-        User user = validateNewUsernameAndEmail(username, null, null);
+    public User updateProfileImage(String username, MultipartFile profileImage)
+            throws NotFoundException, IOException, NotAnImageFileException {
+        User user = userRepository.findUserByUsername(username);
+        if (user == null) {
+            throw new NotFoundException("No user found by username: " + username);
+        }
         saveProfileImage(user, profileImage);
         return user;
     }
 
     private User validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail)
-            throws UsernameExistException, EmailExistException, UserNotFoundException {
+            throws UsernameExistException, EmailExistException, NotFoundException {
         User userByNewUsername = findUserByUsername(newUsername);
         User userByNewEmail = findUserByEmail(newEmail);
         if (StringUtils.isNotBlank(currentUsername)) {
             User currentUser = findUserByUsername(currentUsername);
             if (currentUser == null) {
-                throw new UserNotFoundException("No user found by username");
+                throw new NotFoundException("No user found by username");
             }
             if (userByNewUsername != null && !currentUser.getUserId().equals(userByNewUsername.getUserId())) {
                 throw new UsernameExistException("Username already exists");
@@ -186,17 +194,17 @@ public class UserService implements UserDetailsService {
             }
             Files.deleteIfExists(Paths.get(userFolder + user.getUsername() + FileConstant.DOT + FileConstant.JPG_EXTENSION));
             Files.copy(profileImage.getInputStream(), userFolder.resolve(user.getUsername() + FileConstant.DOT + FileConstant.JPG_EXTENSION), REPLACE_EXISTING);
-            user.setProfileImgUrl(setProfileImageUrl(user.getUsername()));
+            user.setProfileImgUrl(setUserProfileImgUrl(user.getUsername()));
             userRepository.save(user);
             LOGGER.info(FileConstant.FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
         }
     }
 
-    private String getTemporaryProfileImageUrl(String username) {
+    private String getUserTemporaryProfileImageUrl(String username) {
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + username).toUriString();
     }
 
-    private String setProfileImageUrl(String username) {
+    private String setUserProfileImgUrl(String username) {
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(FileConstant.USER_IMAGE_PATH + username + FileConstant.FORWARD_SLASH
                 + username + FileConstant.DOT + FileConstant.JPG_EXTENSION).toUriString();
     }
