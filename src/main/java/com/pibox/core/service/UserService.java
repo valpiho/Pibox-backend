@@ -2,6 +2,7 @@ package com.pibox.core.service;
 
 import com.pibox.core.constant.FileConstant;
 import com.pibox.core.constant.UserImplConstant;
+import com.pibox.core.domain.dto.UserDto;
 import com.pibox.core.enumeration.Role;
 import com.pibox.core.exception.domain.*;
 import com.pibox.core.repository.UserRepository;
@@ -71,7 +72,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByEmail(email);
     }
 
-    public User registerNewUser(String newFirstName, String newLastName, String newUsername, String newPassword, String newEmail)
+    public void registerNewUser(String newFirstName, String newLastName, String newUsername, String newPassword, String newEmail)
             throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
         validateNewUsernameAndEmail(EMPTY, newUsername, newEmail);
         User user = new User();
@@ -87,7 +88,6 @@ public class UserService implements UserDetailsService {
         user.setProfileImgUrl(getTemporaryProfileImageUrl(newUsername));
         userRepository.save(user);
         emailService.sendNewPasswordEmail(newFirstName, newPassword, newEmail);
-        return user;
     }
 
     public User addNewUser(String firstName, String lastName, String username, String email) {
@@ -95,8 +95,17 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public User updateUserByUserId(UUID userId, String firstName, String lastName, String username, String email, String role, boolean isActive) {
-        // TODO: User update
+    public User updateUserByUsername(String username, UserDto newUser) throws UserNotFoundException, EmailExistException, UsernameExistException {
+        User user = validateNewUsernameAndEmail(username, newUser.getUsername(), newUser.getEmail());
+        user.setFirstName(newUser.getFirstName());
+        user.setLastName(newUser.getLastName());
+        user.setUsername(newUser.getUsername());
+        user.setEmail(newUser.getEmail());
+        user.setPassword(encodePassword(newUser.getPassword()));
+        user.setIsActive(newUser.isActive());
+        user.setRole(getRoleEnumName(newUser.getRole()).name());
+        user.setAuthorities(getRoleEnumName(newUser.getRole()).getAuthorities());
+        userRepository.save(user);
         return null;
     }
 
@@ -122,7 +131,7 @@ public class UserService implements UserDetailsService {
         User userByNewEmail = findUserByEmail(newEmail);
         if (StringUtils.isNotBlank(currentUsername)) {
             User currentUser = findUserByUsername(currentUsername);
-            if (currentUsername == null) {
+            if (currentUser == null) {
                 throw new UserNotFoundException("No user found by username");
             }
             if (userByNewUsername != null && !currentUser.getUserId().equals(userByNewUsername.getUserId())) {
@@ -176,5 +185,9 @@ public class UserService implements UserDetailsService {
     private String setProfileImageUrl(String username) {
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(FileConstant.USER_IMAGE_PATH + username + FileConstant.FORWARD_SLASH
                 + username + FileConstant.DOT + FileConstant.JPG_EXTENSION).toUriString();
+    }
+
+    private Role getRoleEnumName(String role) {
+        return Role.valueOf(role.toUpperCase());
     }
 }

@@ -22,16 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import static com.pibox.core.constant.FileConstant.*;
 import static com.pibox.core.constant.SecurityConstant.JWT_TOKEN_HEADER;
-import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -55,7 +46,14 @@ public class UserController {
     @GetMapping("/{username}")
     public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
         User user = userService.findUserByUsername(username);
-        return new ResponseEntity<>(userMapper.userToUserDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
+    }
+
+    @PutMapping("/{username}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable("username") String username,
+                                            @RequestBody UserDto userDto) throws UserNotFoundException, EmailExistException, UsernameExistException {
+        User user = userService.updateUserByUsername(username, userDto);
+        return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
     }
 
     @PostMapping("/register")
@@ -71,7 +69,7 @@ public class UserController {
         User loginUser = userService.findUserByUsername(user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        return new ResponseEntity<>(userMapper.userToUserDto(loginUser), jwtHeader, HttpStatus.OK);
+        return new ResponseEntity<>(userMapper.toUserDto(loginUser), jwtHeader, HttpStatus.OK);
     }
 
     @GetMapping("/reset-password/{email}")
