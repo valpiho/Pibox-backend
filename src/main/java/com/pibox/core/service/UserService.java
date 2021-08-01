@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
+import static com.pibox.core.constant.FileConstant.DEFAULT_USER_IMAGE_PATH;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.http.MediaType.*;
@@ -95,7 +96,8 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public User updateUserByUsername(String username, UserDto newUser) throws UserNotFoundException, EmailExistException, UsernameExistException {
+    public User updateUserByUsername(String username, UserDto newUser, MultipartFile profileImage)
+            throws UserNotFoundException, EmailExistException, UsernameExistException, IOException, NotAnImageFileException {
         User user = validateNewUsernameAndEmail(username, newUser.getUsername(), newUser.getEmail());
         user.setFirstName(newUser.getFirstName());
         user.setLastName(newUser.getLastName());
@@ -106,6 +108,7 @@ public class UserService implements UserDetailsService {
         user.setRole(getRoleEnumName(newUser.getRole()).name());
         user.setAuthorities(getRoleEnumName(newUser.getRole()).getAuthorities());
         userRepository.save(user);
+        saveProfileImage(user, profileImage);
         return null;
     }
 
@@ -124,6 +127,11 @@ public class UserService implements UserDetailsService {
         emailService.sendNewPasswordEmail(user.getFirstName(), password, user.getEmail());
     }
 
+    public User updateProfileImage(String username, MultipartFile profileImage) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException, NotAnImageFileException {
+        User user = validateNewUsernameAndEmail(username, null, null);
+        saveProfileImage(user, profileImage);
+        return user;
+    }
 
     private User validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail)
             throws UsernameExistException, EmailExistException, UserNotFoundException {
@@ -160,10 +168,6 @@ public class UserService implements UserDetailsService {
         return bCryptPasswordEncoder.encode(password);
     }
 
-    private String getTemporaryProfileImageUrl(String username) {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(FileConstant.DEFAULT_USER_IMAGE_PATH + username).toUriString();
-    }
-
     private void saveProfileImage(User user, MultipartFile profileImage) throws IOException, NotAnImageFileException {
         if (profileImage != null) {
             if(!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
@@ -180,6 +184,10 @@ public class UserService implements UserDetailsService {
             userRepository.save(user);
             LOGGER.info(FileConstant.FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
         }
+    }
+
+    private String getTemporaryProfileImageUrl(String username) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + username).toUriString();
     }
 
     private String setProfileImageUrl(String username) {

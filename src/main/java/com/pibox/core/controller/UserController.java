@@ -6,10 +6,7 @@ import com.pibox.core.domain.dto.UserLoginDto;
 import com.pibox.core.domain.dto.UserRegistrationDto;
 import com.pibox.core.domain.model.User;
 import com.pibox.core.domain.UserPrincipal;
-import com.pibox.core.exception.domain.EmailExistException;
-import com.pibox.core.exception.domain.EmailNotFoundException;
-import com.pibox.core.exception.domain.UserNotFoundException;
-import com.pibox.core.exception.domain.UsernameExistException;
+import com.pibox.core.exception.domain.*;
 import com.pibox.core.mapper.UserMapper;
 import com.pibox.core.service.UserService;
 import com.pibox.core.utility.JWTTokenProvider;
@@ -19,8 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
+
+import java.io.IOException;
 
 import static com.pibox.core.constant.SecurityConstant.JWT_TOKEN_HEADER;
 
@@ -43,19 +43,6 @@ public class UserController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
-        User user = userService.findUserByUsername(username);
-        return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
-    }
-
-    @PutMapping("/{username}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("username") String username,
-                                            @RequestBody UserDto userDto) throws UserNotFoundException, EmailExistException, UsernameExistException {
-        User user = userService.updateUserByUsername(username, userDto);
-        return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
-    }
-
     @PostMapping("/register")
     public ResponseEntity<HttpResponse> register(@RequestBody UserRegistrationDto user)
             throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
@@ -76,6 +63,29 @@ public class UserController {
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) throws MessagingException, EmailNotFoundException {
         userService.resetPassword(email);
         return response(HttpStatus.OK, "An email with a new password was sent to: " + email);
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
+        User user = userService.findUserByUsername(username);
+        return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{username}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable("username") String username,
+                                              @RequestBody UserDto userDto,
+                                              @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
+            throws UserNotFoundException, EmailExistException, IOException, UsernameExistException, NotAnImageFileException {
+        User user = userService.updateUserByUsername(username, userDto, profileImage);
+        return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
+    }
+
+    @PostMapping("/updateProfileImage")
+    public ResponseEntity<UserDto> updateProfileImage(@RequestParam("username") String username,
+                                                   @RequestParam(value = "profileImage") MultipartFile profileImage)
+            throws UserNotFoundException, UsernameExistException, EmailExistException, IOException, NotAnImageFileException {
+        User user = userService.updateProfileImage(username, profileImage);
+        return new ResponseEntity<>(userMapper.toUserDto(user), HttpStatus.OK);
     }
 
     private void authenticate(String username, String password) {
