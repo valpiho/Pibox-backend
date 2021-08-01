@@ -77,7 +77,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void registerNewUser(String newFirstName, String newLastName, String newUsername, String newPassword, String newEmail)
-            throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
+            throws UsernameExistException, EmailExistException, UserNotFoundException {
         validateNewUsernameAndEmail(EMPTY, newUsername, newEmail);
         User user = new User();
         user.setFirstName(newFirstName);
@@ -91,7 +91,7 @@ public class UserService implements UserDetailsService {
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
         user.setProfileImgUrl(getTemporaryProfileImageUrl(newUsername));
         userRepository.save(user);
-        emailService.sendNewPasswordEmail(newFirstName, newPassword, newEmail);
+//        emailService.sendNewPasswordEmail(newFirstName, newPassword, newEmail);
     }
 
     public User addNewUser(String firstName, String lastName, String username, String email) {

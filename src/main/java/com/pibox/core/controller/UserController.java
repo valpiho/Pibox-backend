@@ -47,7 +47,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<HttpResponse> register(@RequestBody UserRegistrationDto user)
-            throws UsernameExistException, EmailExistException, UserNotFoundException, MessagingException {
+            throws UsernameExistException, EmailExistException, UserNotFoundException{
         userService.registerNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getPassword(), user.getEmail());
         return response(HttpStatus.CREATED, "New user has been created");
     }

@@ -19,6 +19,7 @@ public class PiboxCoreApplication {
     public static void main(String[] args) {
         SpringApplication.run(PiboxCoreApplication.class, args);
         new File(FileConstant.USER_FOLDER).mkdirs();
+        new File(FileConstant.GROUP_FOLDER).mkdirs();
     }
 
     @Bean

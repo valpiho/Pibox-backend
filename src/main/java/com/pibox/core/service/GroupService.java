@@ -6,11 +6,15 @@ import com.pibox.core.domain.model.Group;
 import com.pibox.core.domain.model.User;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import static com.pibox.core.constant.FileConstant.DEFAULT_GROUP_IMAGE_PATH;
+import static com.pibox.core.constant.FileConstant.DEFAULT_USER_IMAGE_PATH;
 
 @Service
 @Transactional
@@ -46,7 +50,7 @@ public class GroupService {
         group.setDescription(description);
         group.setPublic(isPublic);
         group.setActive(true);
-
+        group.setGroupImgUrl(getTemporaryProfileImageUrl(user.getUserId().toString()));
         groupRepository.save(group);
         return group;
     }
@@ -57,5 +61,9 @@ public class GroupService {
 
     public void deleteGroupByGroupId(UUID groupId) {
         // TODO:
+    }
+
+    private String getTemporaryProfileImageUrl(String groupId) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_GROUP_IMAGE_PATH + groupId).toUriString();
     }
 }

@@ -2,10 +2,13 @@ package com.pibox.core.constant;
 
 public class FileConstant {
     public static final String USER_IMAGE_PATH = "/user/image/";
+    public static final String GROUP_IMAGE_PATH = "/group/image/";
     public static final String JPG_EXTENSION = "jpg";
     public static final String USER_FOLDER = System.getProperty("user.home") + "/pibox/user/";
+    public static final String GROUP_FOLDER = System.getProperty("user.home") + "/pibox/group/";
     public static final String DIRECTORY_CREATED = "Created directory for: ";
     public static final String DEFAULT_USER_IMAGE_PATH = "/user/image/profile/";
+    public static final String DEFAULT_GROUP_IMAGE_PATH = "/group/image/profile/";
     public static final String FILE_SAVED_IN_FILE_SYSTEM = "Saved file in file system by name: ";
     public static final String DOT = ".";
     public static final String FORWARD_SLASH = "/";
